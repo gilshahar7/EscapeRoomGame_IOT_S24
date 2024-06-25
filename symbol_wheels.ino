@@ -1,5 +1,5 @@
 const byte puzzlePin = 22;
-const byte relayPin2 = BUILTIN_LED;
+const byte relayPin = BUILTIN_LED;
 
 void solve() {
   digitalWrite(relayPin, HIGH);
@@ -11,7 +11,7 @@ void setup() {
   Serial.begin(115200);
   pinMode(puzzlePin, INPUT_PULLUP);
   pinMode(relayPin, OUTPUT);
-  digitalWrite(relayPin, HIGH);
+  digitalWrite(relayPin, LOW);
 }
 
 void loop() {
