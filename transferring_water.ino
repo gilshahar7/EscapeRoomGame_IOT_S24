@@ -1,4 +1,5 @@
 #include <Adafruit_NeoPixel.h>
+#include <Keypad.h>
 
 enum stage {WHEELS, WATER, STARS, SOLVED};
 stage currentStage;
@@ -10,9 +11,9 @@ const int capacities[] = {8,5,3};
 const int target = 5;
 
 const byte transferButtonPin = 14;
-const byte fillingPins[] = {18,19,21};
-const byte transferPossibleLED = 22;
-const byte ledsPin = 32;
+const byte fillingPins[] = {25,33,32};
+const byte transferPossibleLED = 12;
+const byte ledsPin = 13;
 
 const int ledMapping[] = {0,1,2,3,4,5,6,7, 12,11,10,9,8, 13,14,15};
 Adafruit_NeoPixel ws2812b(16, ledsPin, NEO_GRB + NEO_KHZ800);
@@ -20,7 +21,26 @@ Adafruit_NeoPixel ws2812b(16, ledsPin, NEO_GRB + NEO_KHZ800);
 int currentValues[] = {8,0,0};
 
 // SPINNING WHEELS
-const byte spinningWheelsPin = 23;
+const byte spinningWheelsPin = 27;
+
+// STARRY NIGHT
+String inputString;
+String starSolution = "1234";
+
+// KEYPAD
+const byte  rowsCount = 4;
+const byte  columsCount = 3;
+
+char keys[rowsCount][columsCount] = {
+  {'1','2','3'},
+  {'4','5','6'},
+  {'7','8','9'},
+  {'*','0','#'}
+};
+
+byte columnPins[columsCount] = {21, 23, 18 };
+byte   rowPins[rowsCount] = {22, 4, 5, 19};
+Keypad keypad = Keypad(makeKeymap(keys),rowPins,columnPins,rowsCount,columsCount);
 
 // RELAY PINS
 const byte relayPin1 = 26;
@@ -60,6 +80,8 @@ void transfer(int from,int to){
     // delay(1000);
     // digitalWrite(relayPin, LOW);
     Serial.print("Solved Transferring Water");
+    currentStage = STARS;
+    digitalWrite(transferPossibleLED, LOW);
   }
 }
 
@@ -141,6 +163,42 @@ void solveWheels() {
   Serial.print("solved wheels");
 }
 
+void solveStars() {
+  digitalWrite(relayPin3, HIGH);
+  delay(1000);
+  digitalWrite(relayPin3, LOW);
+  currentStage = SOLVED;
+  Serial.print("solved stars");
+}
+
+void playTransferWater() {
+  int transferButtonState = digitalRead(transferButtonPin);
+  int fromJug = -1, toJug = -1;
+  for (int i=0; i<numJugs; i++) {
+    for (int j=0; j<numJugs; j++) {
+      if (i == j)
+        continue;
+      if (isConnected(fillingPins[i], fillingPins[j])) {
+        fromJug = j;
+        toJug = i;
+        break;
+      }
+    }
+  }
+  if (fromJug != -1 && toJug != -1) {
+    if (currentValues[fromJug] > 0 && currentValues[toJug] < capacities[toJug]){
+      digitalWrite(transferPossibleLED, HIGH);
+      if (transferButtonState == LOW) {
+        transfer(fromJug, toJug);
+      }
+    } else {
+      digitalWrite(transferPossibleLED, LOW);
+    }
+  } else {
+    digitalWrite(transferPossibleLED, LOW);
+  }
+}
+
 void setup() {
   // put your setup code here, to run once:
   // Transferring water
@@ -176,34 +234,26 @@ void loop() {
     }
     case WATER:
     {
-      int transferButtonState = digitalRead(transferButtonPin);
-      int fromJug = -1, toJug = -1;
-      for (int i=0; i<numJugs; i++) {
-        for (int j=0; j<numJugs; j++) {
-          if (i == j)
-            continue;
-          if (isConnected(fillingPins[i], fillingPins[j])) {
-            fromJug = j;
-            toJug = i;
-            break;
-          }
-        }
-      }
-      if (fromJug != -1 && toJug != -1) {
-        if (currentValues[fromJug] > 0 && currentValues[toJug] < capacities[toJug]){
-          digitalWrite(transferPossibleLED, HIGH);
-          if (transferButtonState == LOW) {
-            transfer(fromJug, toJug);
-          }
-        } else {
-          digitalWrite(transferPossibleLED, LOW);
-        }
-      } else {
-        digitalWrite(transferPossibleLED, LOW);
-      }
+      playTransferWater();
       break;
     }
     case STARS:
+    {
+      char key = keypad.getKey();
+ 	    if (key) {
+        inputString += key;
+        Serial.println(inputString);
+      }
+      if (inputString.length() >= 4) {
+        if(inputString == starSolution) {
+          solveStars();
+        } else {
+          inputString = "";
+          Serial.println("WRONG PASSWORD");
+        }
+      }
+      break;
+    }
     case SOLVED:
       break;
   }
