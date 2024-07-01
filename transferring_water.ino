@@ -154,23 +154,6 @@ bool isConnected(byte OutputPin, byte InputPin) {
   return isConnected;
 }
 
-// SPINNING WHEELS
-void solveWheels() {
-  digitalWrite(relayPin1, HIGH);
-  delay(1000);
-  digitalWrite(relayPin1, LOW);
-  currentStage = WATER;
-  Serial.print("solved wheels");
-}
-
-void solveStars() {
-  digitalWrite(relayPin3, HIGH);
-  delay(1000);
-  digitalWrite(relayPin3, LOW);
-  currentStage = SOLVED;
-  Serial.print("solved stars");
-}
-
 void playTransferWater() {
   int transferButtonState = digitalRead(transferButtonPin);
   int fromJug = -1, toJug = -1;
@@ -199,6 +182,41 @@ void playTransferWater() {
   }
 }
 
+// SPINNING WHEELS
+void solveWheels() {
+  digitalWrite(relayPin1, HIGH);
+  delay(1000);
+  digitalWrite(relayPin1, LOW);
+  currentStage = WATER;
+  Serial.print("solved wheels");
+}
+
+// STARRY NIGHT
+void solveStars() {
+  digitalWrite(relayPin3, HIGH);
+  delay(1000);
+  digitalWrite(relayPin3, LOW);
+  currentStage = SOLVED;
+  Serial.print("solved stars");
+}
+
+void playStarryNight() {
+  char key = keypad.getKey();
+  if (key) {
+    inputString += key;
+    Serial.println(inputString);
+  }
+  if (inputString.length() >= 4) {
+    if(inputString == starSolution) {
+      solveStars();
+    } else {
+      inputString = "";
+      Serial.println("WRONG PASSWORD");
+    }
+  }
+}
+
+/* Main Code */
 void setup() {
   // put your setup code here, to run once:
   // Transferring water
@@ -239,19 +257,7 @@ void loop() {
     }
     case STARS:
     {
-      char key = keypad.getKey();
- 	    if (key) {
-        inputString += key;
-        Serial.println(inputString);
-      }
-      if (inputString.length() >= 4) {
-        if(inputString == starSolution) {
-          solveStars();
-        } else {
-          inputString = "";
-          Serial.println("WRONG PASSWORD");
-        }
-      }
+      playStarryNight();
       break;
     }
     case SOLVED:
