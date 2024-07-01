@@ -1,12 +1,17 @@
 #include <Adafruit_NeoPixel.h>
 
+enum stage {WHEELS, WATER, STARS, SOLVED};
+stage currentStage;
+
+/* CONSTANTS */
+// TRANSFERRING WATER
 const int numJugs = 3;
 const int capacities[] = {8,5,3};
-const int target = 4;
+const int target = 5;
 
 const byte transferButtonPin = 14;
 const byte fillingPins[] = {18,19,21};
-const byte relayPin = 5;
+const byte transferPossibleLED = 22;
 const byte ledsPin = 32;
 
 const int ledMapping[] = {0,1,2,3,4,5,6,7, 12,11,10,9,8, 13,14,15};
@@ -14,6 +19,16 @@ Adafruit_NeoPixel ws2812b(16, ledsPin, NEO_GRB + NEO_KHZ800);
 
 int currentValues[] = {8,0,0};
 
+// SPINNING WHEELS
+const byte spinningWheelsPin = 23;
+
+// RELAY PINS
+const byte relayPin1 = 26;
+const byte relayPin2 = BUILTIN_LED;
+const byte relayPin3 = BUILTIN_LED;
+
+/* CODE */
+// Transferring Water
 void transfer(int from,int to){
   Serial.print("Transferring from ");
   Serial.print(from);
@@ -40,16 +55,43 @@ void transfer(int from,int to){
   }
 
   // check if the puzzle is solved and open the door.
-  if (isSolved()){
-    digitalWrite(relayPin, HIGH);
-    delay(250);
-    digitalWrite(relayPin, HIGH);
+  if (isTransferSolved()){
+    // digitalWrite(relayPin, HIGH);
+    // delay(1000);
+    // digitalWrite(relayPin, LOW);
+    Serial.print("Solved Transferring Water");
   }
 }
 
-bool isSolved() {
+void blinkJug(int jug) {
+  int ledsOffset = 0;
+  for(int i=0; i<jug; i++) {
+    ledsOffset += capacities[i];
+  }
+  for(int j = 0; j < 10; j++) {
+    for(int i = 0; i < target; i++) {
+      ws2812b.setPixelColor(ledMapping[i+ledsOffset], ws2812b.Color(0, 25, 0));  // it only takes effect if pixels.show() is called
+    }
+    ws2812b.show();
+    delay(100);
+
+    for(int i = 0; i < target; i++) {
+      ws2812b.setPixelColor(ledMapping[i+ledsOffset], ws2812b.Color(0, 0, 0));  // it only takes effect if pixels.show() is called
+    }
+    ws2812b.show();
+    delay(100);
+  }
+  for(int i = 0; i < target; i++) {
+    ws2812b.setPixelColor(ledMapping[i+ledsOffset], ws2812b.Color(0, 0, 25));  // it only takes effect if pixels.show() is called
+  }
+  ws2812b.show();
+}
+
+bool isTransferSolved() {
   for(int i=0; i<numJugs; i++){
     if(currentValues[i] == target){
+      // Blink the LEDs rapidly in green for 3 seconds
+      blinkJug(i);
       return true;
     }
   }
@@ -61,7 +103,7 @@ void updateDisplay() {
   for (int jug = 0; jug < numJugs; jug++){
     for (int i = 0; i < capacities[jug]; i++){
       if (i < currentValues[jug]){
-        ws2812b.setPixelColor(ledMapping[ledIndex], ws2812b.Color(0, 0, 50));  // it only takes effect if pixels.show() is called
+        ws2812b.setPixelColor(ledMapping[ledIndex], ws2812b.Color(0, 0, 25));  // it only takes effect if pixels.show() is called
       } else {
         ws2812b.setPixelColor(ledMapping[ledIndex], ws2812b.Color(0, 0, 0));  // it only takes effect if pixels.show() is called
       }
@@ -90,40 +132,80 @@ bool isConnected(byte OutputPin, byte InputPin) {
   return isConnected;
 }
 
+// SPINNING WHEELS
+void solveWheels() {
+  digitalWrite(relayPin1, HIGH);
+  delay(1000);
+  digitalWrite(relayPin1, LOW);
+  currentStage = WATER;
+  Serial.print("solved wheels");
+}
+
 void setup() {
   // put your setup code here, to run once:
+  // Transferring water
   Serial.begin(115200);
   pinMode (ledsPin, OUTPUT);
   ws2812b.begin();
 
+  pinMode(relayPin2, OUTPUT);
+  digitalWrite(relayPin2, LOW);
   pinMode(transferButtonPin, INPUT_PULLUP);
-  pinMode(relayPin, OUTPUT);
-  digitalWrite(relayPin, LOW);
+  pinMode(transferPossibleLED, OUTPUT);
+  digitalWrite(transferPossibleLED, LOW);
+
+  // Spinning wheels
+  pinMode(spinningWheelsPin, INPUT_PULLUP);
+  pinMode(relayPin1, OUTPUT);
+  digitalWrite(relayPin1, LOW);
+
+  currentStage = WHEELS;
+
   updateDisplay();
 }
 
 void loop() {
-  int transferButtonState = digitalRead(transferButtonPin);
-  int fromJug = -1, toJug = -1;
-  for (int i=0; i<numJugs; i++) {
-    for (int j=0; j<numJugs; j++) {
-      if (i == j)
-        continue;
-      if (isConnected(fillingPins[i], fillingPins[j])) {
-        Serial.println("CONNECTED:");
-        Serial.println(j);
-        Serial.println(i);
-        fromJug = j;
-        toJug = i;
-        break;
+  switch(currentStage) {
+    case WHEELS:
+    {
+      int solvedWheels = digitalRead(spinningWheelsPin);
+      if (solvedWheels == HIGH) {
+        solveWheels();
       }
+      break;
     }
-  }
-  if (fromJug != -1 && toJug != -1) {
-    if (currentValues[fromJug] > 0 && currentValues[toJug] < capacities[toJug] && transferButtonState == LOW){
-      Serial.println("TRANSFER:");
-      transfer(fromJug, toJug);
+    case WATER:
+    {
+      int transferButtonState = digitalRead(transferButtonPin);
+      int fromJug = -1, toJug = -1;
+      for (int i=0; i<numJugs; i++) {
+        for (int j=0; j<numJugs; j++) {
+          if (i == j)
+            continue;
+          if (isConnected(fillingPins[i], fillingPins[j])) {
+            fromJug = j;
+            toJug = i;
+            break;
+          }
+        }
+      }
+      if (fromJug != -1 && toJug != -1) {
+        if (currentValues[fromJug] > 0 && currentValues[toJug] < capacities[toJug]){
+          digitalWrite(transferPossibleLED, HIGH);
+          if (transferButtonState == LOW) {
+            transfer(fromJug, toJug);
+          }
+        } else {
+          digitalWrite(transferPossibleLED, LOW);
+        }
+      } else {
+        digitalWrite(transferPossibleLED, LOW);
+      }
+      break;
     }
+    case STARS:
+    case SOLVED:
+      break;
   }
   
   delay(10); // this speeds up the simulation
