@@ -135,7 +135,8 @@
             "4914960f90ca3cc1",
             "3929d6b8ab478257",
             "06a789f1442e69fe",
-            "c88774fe78928b1c"
+            "c88774fe78928b1c",
+            "f06474adf5c555fd"
         ],
         "x": 34,
         "y": 759,
@@ -161,7 +162,8 @@
             "aa16ccd3f5f28505",
             "cd2a8ed5de01de4e",
             "ca19b9cff9beedcd",
-            "c80ad87ebaf6feb7"
+            "c80ad87ebaf6feb7",
+            "fb38e42fc34d5c58"
         ],
         "x": 34,
         "y": 1059,
@@ -187,99 +189,13 @@
             "76e047cebbad8e36",
             "63441f4d4f7f3d90",
             "38f87d2518380b77",
-            "4c6bd67051f7725e"
+            "4c6bd67051f7725e",
+            "ef86f82a50ba9315"
         ],
         "x": 614,
         "y": 759,
         "w": 552,
         "h": 282
-    },
-    {
-        "id": "3d988688d528b497",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "b3347a2580c58dea",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 12,
-        "width": 2,
-        "height": 1,
-        "passthru": true,
-        "label": "Start",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "green",
-        "className": "",
-        "icon": "fa-play",
-        "payload": "{\"msg\":{\"payload\":\"gamestart\",\"timeout\":600,\"warning\":30}}",
-        "payloadType": "json",
-        "topic": "/game",
-        "topicType": "str",
-        "x": 110,
-        "y": 360,
-        "wires": [
-            [
-                "f11001833c75f582"
-            ]
-        ]
-    },
-    {
-        "id": "418d947d92d5c979",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "b3347a2580c58dea",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 10,
-        "width": 2,
-        "height": 1,
-        "passthru": true,
-        "label": "Stop",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "red",
-        "className": "",
-        "icon": "fa-stop",
-        "payload": "{     \"payload\": \"cancel\" }",
-        "payloadType": "json",
-        "topic": "/game",
-        "topicType": "str",
-        "x": 110,
-        "y": 400,
-        "wires": [
-            [
-                "c94cba2ac4521bb0"
-            ]
-        ]
-    },
-    {
-        "id": "7d5b08fa137d79b3",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "b3347a2580c58dea",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 11,
-        "width": 2,
-        "height": 1,
-        "passthru": true,
-        "label": "Reset",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "orange",
-        "className": "",
-        "icon": "fa-fast-backward",
-        "payload": "{\"timeout\": 600 }",
-        "payloadType": "json",
-        "topic": "/game",
-        "topicType": "str",
-        "x": 110,
-        "y": 440,
-        "wires": [
-            [
-                "139166a6297ed2e3"
-            ]
-        ]
     },
     {
         "id": "1185277447cbe044",
@@ -689,21 +605,6 @@
         "wires": []
     },
     {
-        "id": "0a310e06b4292d47",
-        "type": "ui_ui_control",
-        "z": "0e9b6e83699a936b",
-        "g": "e38da52e5679f0be",
-        "name": "On Browser Refresh",
-        "events": "all",
-        "x": 160,
-        "y": 260,
-        "wires": [
-            [
-                "574e6736a280d598"
-            ]
-        ]
-    },
-    {
         "id": "574e6736a280d598",
         "type": "link out",
         "z": "0e9b6e83699a936b",
@@ -715,29 +616,6 @@
         "x": 295,
         "y": 260,
         "wires": []
-    },
-    {
-        "id": "9719c523f57b592a",
-        "type": "ui_template",
-        "z": "0e9b6e83699a936b",
-        "g": "5131f7b8cd68af74",
-        "group": "2167d545401575ce",
-        "name": "CSS-style overrides",
-        "order": 1,
-        "width": 0,
-        "height": 0,
-        "format": "<style>\n\n    /* Don't let title expand */\n    md-card md-card-title {\n        flex: 0 0 auto !important;\n    }\n\n    /* Don't show scrollbars */\n    .nr-dashboard-template {\n        overflow-y: hidden !important;\n    }\n</style>",
-        "storeOutMessages": true,
-        "fwdInMessages": true,
-        "resendOnRefresh": false,
-        "templateScope": "global",
-        "className": "",
-        "x": 860,
-        "y": 180,
-        "wires": [
-            []
-        ],
-        "info": "CSS Style overrides to the Node-RED Dark theme.\n\nFrom the Dashboard node information panel (View->Dashboard), select\n - Site: Options -> Node-RED theme everywhere\n - Theme: Style -> Dark"
     },
     {
         "id": "6dd740798336e33c",
@@ -806,28 +684,6 @@
         ]
     },
     {
-        "id": "4e8e208e95aff9af",
-        "type": "ui_template",
-        "z": "0e9b6e83699a936b",
-        "g": "7dae6bb0080ed610",
-        "group": "2167d545401575ce",
-        "name": "Time Remaining",
-        "order": 3,
-        "width": 6,
-        "height": 3,
-        "format": "<md-card-title>\n    <md-card-title-text>\n        <p class=\"md-headline\">Time Remaining</p>\n    </md-card-title-text>\n    <span ng-class=\"'fa fa-clock-o fa-2x'\"></span>\n</md-card-title>\n<md-card-content>\n    <div style=\"text-align:center\">\n        <span class=\"value\" style=\"color:{{msg.timeColour}}; font-size:3em;\">\n            {{msg.formattedTimeRemaining}}\n        </span>\n    </div>\n</md-card-content>",
-        "storeOutMessages": true,
-        "fwdInMessages": true,
-        "resendOnRefresh": false,
-        "templateScope": "local",
-        "className": "",
-        "x": 750,
-        "y": 540,
-        "wires": [
-            []
-        ]
-    },
-    {
         "id": "bf0e90488198976d",
         "type": "function",
         "z": "0e9b6e83699a936b",
@@ -868,64 +724,6 @@
         "wires": [
             [
                 "85c6af671bb6d06d"
-            ]
-        ]
-    },
-    {
-        "id": "d37f5d54578b73b3",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "7dae6bb0080ed610",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 17,
-        "width": 2,
-        "height": 1,
-        "passthru": true,
-        "label": "+5min",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "grey",
-        "className": "",
-        "icon": "fa-plus",
-        "payload": "{\"msg\":{\"payload\":\"add5\",\"timeout\":600,\"warning\":30}}",
-        "payloadType": "json",
-        "topic": "/game",
-        "topicType": "str",
-        "x": 110,
-        "y": 660,
-        "wires": [
-            [
-                "b604b62acb653363"
-            ]
-        ]
-    },
-    {
-        "id": "4502951251b4bd6c",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "7dae6bb0080ed610",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 15,
-        "width": 2,
-        "height": 1,
-        "passthru": true,
-        "label": "-5min",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "gray",
-        "className": "",
-        "icon": "fa-minus",
-        "payload": "{\"msg\":{\"payload\":\"deduct5\",\"timeout\":600,\"warning\":30}}",
-        "payloadType": "json",
-        "topic": "/game",
-        "topicType": "str",
-        "x": 110,
-        "y": 700,
-        "wires": [
-            [
-                "4990cf4d3d5c7aeb"
             ]
         ]
     },
@@ -1000,24 +798,6 @@
         "wires": []
     },
     {
-        "id": "12db1fbec89853d6",
-        "type": "ui_text",
-        "z": "0e9b6e83699a936b",
-        "g": "7dae6bb0080ed610",
-        "group": "2167d545401575ce",
-        "order": 16,
-        "width": 2,
-        "height": 1,
-        "name": "Game Duration",
-        "label": "Duration",
-        "format": "{{msg.formattedGameDuration}}",
-        "layout": "col-center",
-        "className": "",
-        "x": 740,
-        "y": 580,
-        "wires": []
-    },
-    {
         "id": "f760cc5a8ffaba23",
         "type": "comment",
         "z": "0e9b6e83699a936b",
@@ -1057,35 +837,6 @@
         ]
     },
     {
-        "id": "1f2ceadc490ad4d6",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "7293852c04840e70",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 23,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "wheels reset",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 130,
-        "y": 920,
-        "wires": [
-            [
-                "c88774fe78928b1c"
-            ]
-        ]
-    },
-    {
         "id": "2d52fc135d18ef1c",
         "type": "change",
         "z": "0e9b6e83699a936b",
@@ -1121,35 +872,6 @@
         ]
     },
     {
-        "id": "633925c92a74f007",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "7293852c04840e70",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 26,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "wheels hint",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 130,
-        "y": 960,
-        "wires": [
-            [
-                "2d52fc135d18ef1c"
-            ]
-        ]
-    },
-    {
         "id": "d4a063abd5553fe6",
         "type": "link out",
         "z": "0e9b6e83699a936b",
@@ -1162,79 +884,6 @@
         "x": 545,
         "y": 960,
         "wires": []
-    },
-    {
-        "id": "470f5906fcb84851",
-        "type": "ui_text",
-        "z": "0e9b6e83699a936b",
-        "g": "7293852c04840e70",
-        "group": "2167d545401575ce",
-        "order": 32,
-        "width": 6,
-        "height": 1,
-        "name": "",
-        "label": "State: ",
-        "format": "{{msg.wheelState}}",
-        "layout": "row-spread",
-        "className": "",
-        "style": false,
-        "font": "",
-        "fontSize": 16,
-        "color": "#000000",
-        "x": 430,
-        "y": 840,
-        "wires": []
-    },
-    {
-        "id": "bab035e7063a3932",
-        "type": "ui_text",
-        "z": "0e9b6e83699a936b",
-        "g": "7293852c04840e70",
-        "group": "2167d545401575ce",
-        "order": 20,
-        "width": 6,
-        "height": 1,
-        "name": "",
-        "label": "Game:",
-        "format": "Spinning Wheels",
-        "layout": "row-center",
-        "className": "",
-        "style": false,
-        "font": "",
-        "fontSize": 16,
-        "color": "#000000",
-        "x": 110,
-        "y": 800,
-        "wires": []
-    },
-    {
-        "id": "4914960f90ca3cc1",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "7293852c04840e70",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 29,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "wheels solve",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 130,
-        "y": 1000,
-        "wires": [
-            [
-                "3929d6b8ab478257"
-            ]
-        ]
     },
     {
         "id": "3929d6b8ab478257",
@@ -1346,35 +995,6 @@
         ]
     },
     {
-        "id": "c8286de640741d08",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "32c848157be87e68",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 24,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "water reset",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 130,
-        "y": 1220,
-        "wires": [
-            [
-                "c80ad87ebaf6feb7"
-            ]
-        ]
-    },
-    {
         "id": "9c33762e49bd99bb",
         "type": "change",
         "z": "0e9b6e83699a936b",
@@ -1410,35 +1030,6 @@
         ]
     },
     {
-        "id": "288ce8644d0efee5",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "32c848157be87e68",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 27,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "water hint",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 120,
-        "y": 1260,
-        "wires": [
-            [
-                "9c33762e49bd99bb"
-            ]
-        ]
-    },
-    {
         "id": "c8a4357217c5c9fc",
         "type": "link out",
         "z": "0e9b6e83699a936b",
@@ -1451,79 +1042,6 @@
         "x": 545,
         "y": 1260,
         "wires": []
-    },
-    {
-        "id": "b47d118da4eb988a",
-        "type": "ui_text",
-        "z": "0e9b6e83699a936b",
-        "g": "32c848157be87e68",
-        "group": "2167d545401575ce",
-        "order": 33,
-        "width": 6,
-        "height": 1,
-        "name": "",
-        "label": "State: ",
-        "format": "{{msg.waterState}}",
-        "layout": "row-spread",
-        "className": "",
-        "style": false,
-        "font": "",
-        "fontSize": 16,
-        "color": "#000000",
-        "x": 430,
-        "y": 1140,
-        "wires": []
-    },
-    {
-        "id": "959dae9bb36dc85f",
-        "type": "ui_text",
-        "z": "0e9b6e83699a936b",
-        "g": "32c848157be87e68",
-        "group": "2167d545401575ce",
-        "order": 21,
-        "width": 6,
-        "height": 1,
-        "name": "",
-        "label": "Game:",
-        "format": "Transferring Water",
-        "layout": "row-center",
-        "className": "",
-        "style": false,
-        "font": "",
-        "fontSize": 16,
-        "color": "#000000",
-        "x": 110,
-        "y": 1100,
-        "wires": []
-    },
-    {
-        "id": "aa16ccd3f5f28505",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "32c848157be87e68",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 30,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "water solve",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 130,
-        "y": 1300,
-        "wires": [
-            [
-                "cd2a8ed5de01de4e"
-            ]
-        ]
     },
     {
         "id": "cd2a8ed5de01de4e",
@@ -1635,35 +1153,6 @@
         ]
     },
     {
-        "id": "4271aafd094ebdb3",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "dfd306472dc35c1f",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 25,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "star reset",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 700,
-        "y": 920,
-        "wires": [
-            [
-                "4c6bd67051f7725e"
-            ]
-        ]
-    },
-    {
         "id": "879772adf4990c16",
         "type": "change",
         "z": "0e9b6e83699a936b",
@@ -1699,35 +1188,6 @@
         ]
     },
     {
-        "id": "1dec64eb0ccf774f",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "dfd306472dc35c1f",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 28,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "star hint",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 700,
-        "y": 960,
-        "wires": [
-            [
-                "879772adf4990c16"
-            ]
-        ]
-    },
-    {
         "id": "ea7a98b39f6d9780",
         "type": "link out",
         "z": "0e9b6e83699a936b",
@@ -1740,79 +1200,6 @@
         "x": 1125,
         "y": 960,
         "wires": []
-    },
-    {
-        "id": "46dc148489aa55e6",
-        "type": "ui_text",
-        "z": "0e9b6e83699a936b",
-        "g": "dfd306472dc35c1f",
-        "group": "2167d545401575ce",
-        "order": 34,
-        "width": 6,
-        "height": 1,
-        "name": "",
-        "label": "State: ",
-        "format": "{{msg.starState}}",
-        "layout": "row-spread",
-        "className": "",
-        "style": false,
-        "font": "",
-        "fontSize": 16,
-        "color": "#000000",
-        "x": 1010,
-        "y": 840,
-        "wires": []
-    },
-    {
-        "id": "619a79109c4f4690",
-        "type": "ui_text",
-        "z": "0e9b6e83699a936b",
-        "g": "dfd306472dc35c1f",
-        "group": "2167d545401575ce",
-        "order": 22,
-        "width": 6,
-        "height": 1,
-        "name": "",
-        "label": "Game:",
-        "format": "Starry Night",
-        "layout": "row-center",
-        "className": "",
-        "style": false,
-        "font": "",
-        "fontSize": 16,
-        "color": "#000000",
-        "x": 690,
-        "y": 800,
-        "wires": []
-    },
-    {
-        "id": "76e047cebbad8e36",
-        "type": "ui_button",
-        "z": "0e9b6e83699a936b",
-        "g": "dfd306472dc35c1f",
-        "name": "",
-        "group": "2167d545401575ce",
-        "order": 31,
-        "width": 6,
-        "height": 1,
-        "passthru": false,
-        "label": "star solve",
-        "tooltip": "",
-        "color": "",
-        "bgcolor": "",
-        "className": "",
-        "icon": "",
-        "payload": "",
-        "payloadType": "str",
-        "topic": "topic",
-        "topicType": "msg",
-        "x": 700,
-        "y": 1000,
-        "wires": [
-            [
-                "63441f4d4f7f3d90"
-            ]
-        ]
     },
     {
         "id": "63441f4d4f7f3d90",
@@ -1906,7 +1293,733 @@
         ]
     },
     {
-        "id": "7ac65bcb2b08b01d",
+        "id": "3d988688d528b497",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "b3347a2580c58dea",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 12,
+        "width": 2,
+        "height": 1,
+        "passthru": true,
+        "label": "Start",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "green",
+        "className": "",
+        "icon": "fa-play",
+        "payload": "{\"msg\":{\"payload\":\"gamestart\",\"timeout\":600,\"warning\":30}}",
+        "payloadType": "json",
+        "topic": "/game",
+        "topicType": "str",
+        "x": 110,
+        "y": 360,
+        "wires": [
+            [
+                "f11001833c75f582"
+            ]
+        ]
+    },
+    {
+        "id": "418d947d92d5c979",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "b3347a2580c58dea",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 10,
+        "width": 2,
+        "height": 1,
+        "passthru": true,
+        "label": "Stop",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "red",
+        "className": "",
+        "icon": "fa-stop",
+        "payload": "{     \"payload\": \"cancel\" }",
+        "payloadType": "json",
+        "topic": "/game",
+        "topicType": "str",
+        "x": 110,
+        "y": 400,
+        "wires": [
+            [
+                "c94cba2ac4521bb0"
+            ]
+        ]
+    },
+    {
+        "id": "7d5b08fa137d79b3",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "b3347a2580c58dea",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 11,
+        "width": 2,
+        "height": 1,
+        "passthru": true,
+        "label": "Reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "orange",
+        "className": "",
+        "icon": "fa-fast-backward",
+        "payload": "{\"timeout\": 600 }",
+        "payloadType": "json",
+        "topic": "/game",
+        "topicType": "str",
+        "x": 110,
+        "y": 440,
+        "wires": [
+            [
+                "139166a6297ed2e3"
+            ]
+        ]
+    },
+    {
+        "id": "d37f5d54578b73b3",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "7dae6bb0080ed610",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 17,
+        "width": 2,
+        "height": 1,
+        "passthru": true,
+        "label": "+5min",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "grey",
+        "className": "",
+        "icon": "fa-plus",
+        "payload": "{\"msg\":{\"payload\":\"add5\",\"timeout\":600,\"warning\":30}}",
+        "payloadType": "json",
+        "topic": "/game",
+        "topicType": "str",
+        "x": 110,
+        "y": 660,
+        "wires": [
+            [
+                "b604b62acb653363"
+            ]
+        ]
+    },
+    {
+        "id": "4502951251b4bd6c",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "7dae6bb0080ed610",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 15,
+        "width": 2,
+        "height": 1,
+        "passthru": true,
+        "label": "-5min",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "gray",
+        "className": "",
+        "icon": "fa-minus",
+        "payload": "{\"msg\":{\"payload\":\"deduct5\",\"timeout\":600,\"warning\":30}}",
+        "payloadType": "json",
+        "topic": "/game",
+        "topicType": "str",
+        "x": 110,
+        "y": 700,
+        "wires": [
+            [
+                "4990cf4d3d5c7aeb"
+            ]
+        ]
+    },
+    {
+        "id": "1f2ceadc490ad4d6",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "7293852c04840e70",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 23,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "wheels reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "wheels_reset",
+        "payloadType": "str",
+        "topic": "admin",
+        "topicType": "str",
+        "x": 130,
+        "y": 920,
+        "wires": [
+            [
+                "c88774fe78928b1c",
+                "f06474adf5c555fd"
+            ]
+        ]
+    },
+    {
+        "id": "633925c92a74f007",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "7293852c04840e70",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 26,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "wheels hint",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "wheels_hint",
+        "payloadType": "str",
+        "topic": "admin",
+        "topicType": "str",
+        "x": 130,
+        "y": 960,
+        "wires": [
+            [
+                "2d52fc135d18ef1c",
+                "f06474adf5c555fd"
+            ]
+        ]
+    },
+    {
+        "id": "4914960f90ca3cc1",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "7293852c04840e70",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 29,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "wheels solve",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "wheels_solve",
+        "payloadType": "str",
+        "topic": "admin",
+        "topicType": "str",
+        "x": 130,
+        "y": 1000,
+        "wires": [
+            [
+                "3929d6b8ab478257",
+                "f06474adf5c555fd"
+            ]
+        ]
+    },
+    {
+        "id": "c8286de640741d08",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "32c848157be87e68",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 24,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "water reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "water_reset",
+        "payloadType": "str",
+        "topic": "admin",
+        "topicType": "str",
+        "x": 130,
+        "y": 1220,
+        "wires": [
+            [
+                "c80ad87ebaf6feb7",
+                "fb38e42fc34d5c58"
+            ]
+        ]
+    },
+    {
+        "id": "288ce8644d0efee5",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "32c848157be87e68",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 27,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "water hint",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "water_hint",
+        "payloadType": "str",
+        "topic": "admin",
+        "topicType": "str",
+        "x": 120,
+        "y": 1260,
+        "wires": [
+            [
+                "9c33762e49bd99bb",
+                "fb38e42fc34d5c58"
+            ]
+        ]
+    },
+    {
+        "id": "aa16ccd3f5f28505",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "32c848157be87e68",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 30,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "water solve",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "water_solve",
+        "payloadType": "str",
+        "topic": "admin",
+        "topicType": "str",
+        "x": 130,
+        "y": 1300,
+        "wires": [
+            [
+                "cd2a8ed5de01de4e",
+                "fb38e42fc34d5c58"
+            ]
+        ]
+    },
+    {
+        "id": "4271aafd094ebdb3",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "dfd306472dc35c1f",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 25,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "star reset",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "star_reset",
+        "payloadType": "str",
+        "topic": "admin",
+        "topicType": "str",
+        "x": 700,
+        "y": 920,
+        "wires": [
+            [
+                "4c6bd67051f7725e",
+                "ef86f82a50ba9315"
+            ]
+        ]
+    },
+    {
+        "id": "1dec64eb0ccf774f",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "dfd306472dc35c1f",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 28,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "star hint",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "star_hint",
+        "payloadType": "str",
+        "topic": "admin",
+        "topicType": "str",
+        "x": 700,
+        "y": 960,
+        "wires": [
+            [
+                "879772adf4990c16",
+                "ef86f82a50ba9315"
+            ]
+        ]
+    },
+    {
+        "id": "76e047cebbad8e36",
+        "type": "ui_button",
+        "z": "0e9b6e83699a936b",
+        "g": "dfd306472dc35c1f",
+        "name": "",
+        "group": "2167d545401575ce",
+        "order": 31,
+        "width": 6,
+        "height": 1,
+        "passthru": false,
+        "label": "star solve",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "star_solve",
+        "payloadType": "str",
+        "topic": "admin",
+        "topicType": "str",
+        "x": 700,
+        "y": 1000,
+        "wires": [
+            [
+                "63441f4d4f7f3d90",
+                "ef86f82a50ba9315"
+            ]
+        ]
+    },
+    {
+        "id": "12db1fbec89853d6",
+        "type": "ui_text",
+        "z": "0e9b6e83699a936b",
+        "g": "7dae6bb0080ed610",
+        "group": "2167d545401575ce",
+        "order": 16,
+        "width": 2,
+        "height": 1,
+        "name": "Game Duration",
+        "label": "Duration",
+        "format": "{{msg.formattedGameDuration}}",
+        "layout": "col-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": "",
+        "color": "#000000",
+        "x": 740,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "470f5906fcb84851",
+        "type": "ui_text",
+        "z": "0e9b6e83699a936b",
+        "g": "7293852c04840e70",
+        "group": "2167d545401575ce",
+        "order": 32,
+        "width": 6,
+        "height": 1,
+        "name": "",
+        "label": "State: ",
+        "format": "{{msg.wheelState}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 430,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "bab035e7063a3932",
+        "type": "ui_text",
+        "z": "0e9b6e83699a936b",
+        "g": "7293852c04840e70",
+        "group": "2167d545401575ce",
+        "order": 20,
+        "width": 6,
+        "height": 1,
+        "name": "",
+        "label": "Game:",
+        "format": "Spinning Wheels",
+        "layout": "row-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 110,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "b47d118da4eb988a",
+        "type": "ui_text",
+        "z": "0e9b6e83699a936b",
+        "g": "32c848157be87e68",
+        "group": "2167d545401575ce",
+        "order": 33,
+        "width": 6,
+        "height": 1,
+        "name": "",
+        "label": "State: ",
+        "format": "{{msg.waterState}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 430,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "959dae9bb36dc85f",
+        "type": "ui_text",
+        "z": "0e9b6e83699a936b",
+        "g": "32c848157be87e68",
+        "group": "2167d545401575ce",
+        "order": 21,
+        "width": 6,
+        "height": 1,
+        "name": "",
+        "label": "Game:",
+        "format": "Transferring Water",
+        "layout": "row-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 110,
+        "y": 1100,
+        "wires": []
+    },
+    {
+        "id": "46dc148489aa55e6",
+        "type": "ui_text",
+        "z": "0e9b6e83699a936b",
+        "g": "dfd306472dc35c1f",
+        "group": "2167d545401575ce",
+        "order": 34,
+        "width": 6,
+        "height": 1,
+        "name": "",
+        "label": "State: ",
+        "format": "{{msg.starState}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1010,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "619a79109c4f4690",
+        "type": "ui_text",
+        "z": "0e9b6e83699a936b",
+        "g": "dfd306472dc35c1f",
+        "group": "2167d545401575ce",
+        "order": 22,
+        "width": 6,
+        "height": 1,
+        "name": "",
+        "label": "Game:",
+        "format": "Starry Night",
+        "layout": "row-center",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 690,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "0a310e06b4292d47",
+        "type": "ui_ui_control",
+        "z": "0e9b6e83699a936b",
+        "g": "e38da52e5679f0be",
+        "name": "On Browser Refresh",
+        "events": "all",
+        "x": 160,
+        "y": 260,
+        "wires": [
+            [
+                "574e6736a280d598"
+            ]
+        ]
+    },
+    {
+        "id": "9719c523f57b592a",
+        "type": "ui_template",
+        "z": "0e9b6e83699a936b",
+        "g": "5131f7b8cd68af74",
+        "group": "2167d545401575ce",
+        "name": "CSS-style overrides",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "format": "<style>\n\n    /* Don't let title expand */\n    md-card md-card-title {\n        flex: 0 0 auto !important;\n    }\n\n    /* Don't show scrollbars */\n    .nr-dashboard-template {\n        overflow-y: hidden !important;\n    }\n</style>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "global",
+        "className": "",
+        "x": 860,
+        "y": 180,
+        "wires": [
+            []
+        ],
+        "info": "CSS Style overrides to the Node-RED Dark theme.\n\nFrom the Dashboard node information panel (View->Dashboard), select\n - Site: Options -> Node-RED theme everywhere\n - Theme: Style -> Dark"
+    },
+    {
+        "id": "4e8e208e95aff9af",
+        "type": "ui_template",
+        "z": "0e9b6e83699a936b",
+        "g": "7dae6bb0080ed610",
+        "group": "2167d545401575ce",
+        "name": "Time Remaining",
+        "order": 3,
+        "width": 6,
+        "height": 3,
+        "format": "<md-card-title>\n    <md-card-title-text>\n        <p class=\"md-headline\">Time Remaining</p>\n    </md-card-title-text>\n    <span ng-class=\"'fa fa-clock-o fa-2x'\"></span>\n</md-card-title>\n<md-card-content>\n    <div style=\"text-align:center\">\n        <span class=\"value\" style=\"color:{{msg.timeColour}}; font-size:3em;\">\n            {{msg.formattedTimeRemaining}}\n        </span>\n    </div>\n</md-card-content>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": false,
+        "templateScope": "local",
+        "className": "",
+        "x": 750,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "3b239c2d553ac9ce",
+        "type": "mqtt in",
+        "z": "0e9b6e83699a936b",
+        "name": "",
+        "topic": "Topic",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "9a7a68b2be818d4e",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 890,
+        "y": 1280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "83bd4780ea0f08b4",
+        "type": "mqtt out",
+        "z": "0e9b6e83699a936b",
+        "name": "",
+        "topic": "",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "9a7a68b2be818d4e",
+        "x": 1010,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "f06474adf5c555fd",
+        "type": "link out",
+        "z": "0e9b6e83699a936b",
+        "g": "7293852c04840e70",
+        "name": "wheelMQTTLinkOut",
+        "mode": "link",
+        "links": [
+            "7c3b856ca1ea044b"
+        ],
+        "x": 255,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "7c3b856ca1ea044b",
+        "type": "link in",
+        "z": "0e9b6e83699a936b",
+        "name": "MQTTOutLinkIn",
+        "links": [
+            "f06474adf5c555fd",
+            "fb38e42fc34d5c58",
+            "ef86f82a50ba9315"
+        ],
+        "x": 865,
+        "y": 1200,
+        "wires": [
+            [
+                "83bd4780ea0f08b4"
+            ]
+        ]
+    },
+    {
+        "id": "fb38e42fc34d5c58",
+        "type": "link out",
+        "z": "0e9b6e83699a936b",
+        "g": "32c848157be87e68",
+        "name": "WaterMQTTLinkOut",
+        "mode": "link",
+        "links": [
+            "7c3b856ca1ea044b"
+        ],
+        "x": 255,
+        "y": 1200,
+        "wires": []
+    },
+    {
+        "id": "ef86f82a50ba9315",
+        "type": "link out",
+        "z": "0e9b6e83699a936b",
+        "g": "dfd306472dc35c1f",
+        "name": "StarMQTTLinkOut",
+        "mode": "link",
+        "links": [
+            "7c3b856ca1ea044b"
+        ],
+        "x": 815,
+        "y": 900,
+        "wires": []
+    },
+    {
+        "id": "06f1b44bf4bb4f13",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -1916,7 +2029,7 @@
         "height": 1
     },
     {
-        "id": "c9f90264e59704cb",
+        "id": "206ab0e9428991e4",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -1926,7 +2039,7 @@
         "height": 1
     },
     {
-        "id": "e2dca2d1d51165b5",
+        "id": "0d1bab432d7bcd1c",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -1936,7 +2049,7 @@
         "height": 1
     },
     {
-        "id": "836e206c9e3ba56e",
+        "id": "ed02403dfdba7283",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -1946,7 +2059,7 @@
         "height": 1
     },
     {
-        "id": "093aa6e3e0b8f98c",
+        "id": "70461969554f0bc7",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -1956,7 +2069,7 @@
         "height": 1
     },
     {
-        "id": "fd4d12c4463f4c82",
+        "id": "6ce9acb2dce06261",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -1966,7 +2079,7 @@
         "height": 1
     },
     {
-        "id": "afb3210878eac475",
+        "id": "04c08808f4cb8918",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -1976,7 +2089,7 @@
         "height": 1
     },
     {
-        "id": "455e32146e6b264d",
+        "id": "61ed02a5c0034fce",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -1986,7 +2099,7 @@
         "height": 1
     },
     {
-        "id": "1b39d7371dcff334",
+        "id": "d372eb825884e896",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -1996,7 +2109,7 @@
         "height": 1
     },
     {
-        "id": "75a771b11734c952",
+        "id": "71a3813bc867bcd9",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -2006,7 +2119,7 @@
         "height": 1
     },
     {
-        "id": "0dec80246a2040f1",
+        "id": "524db4af694c45b4",
         "type": "ui_spacer",
         "z": "0e9b6e83699a936b",
         "name": "spacer",
@@ -2025,6 +2138,37 @@
         "width": 18,
         "collapse": false,
         "className": ""
+    },
+    {
+        "id": "9a7a68b2be818d4e",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
     },
     {
         "id": "ff24fa37c64a35b4",

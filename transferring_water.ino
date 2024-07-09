@@ -1,10 +1,22 @@
 #include <Adafruit_NeoPixel.h>
 #include <Keypad.h>
+#include <WiFi.h>
+#include <PubSubClient.h>
 
 enum stage {WHEELS, WATER, STARS, SOLVED};
 stage currentStage;
 
 /* CONSTANTS */
+// Wi-Fi
+const char* ssid = "ESP32_AP";
+const char* password = "12345678";
+WiFiClient espClient;
+
+// MQTT
+const char* mqtt_server = "192.168.4.2";
+const int mqtt_port = 1883;
+PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
+
 // TRANSFERRING WATER
 const int numJugs = 3;
 const int capacities[] = {8,5,3};
@@ -44,8 +56,8 @@ Keypad keypad = Keypad(makeKeymap(keys),rowPins,columnPins,rowsCount,columsCount
 
 // RELAY PINS
 const byte relayPin1 = 26;
-const byte relayPin2 = BUILTIN_LED;
-const byte relayPin3 = BUILTIN_LED;
+const byte relayPin2 = 2;
+const byte relayPin3 = 15;
 
 /* CODE */
 // Transferring Water
@@ -76,9 +88,9 @@ void transfer(int from,int to){
 
   // check if the puzzle is solved and open the door.
   if (isTransferSolved()){
-    // digitalWrite(relayPin, HIGH);
-    // delay(1000);
-    // digitalWrite(relayPin, LOW);
+    digitalWrite(relayPin2, HIGH);
+    delay(1000);
+    digitalWrite(relayPin2, LOW);
     Serial.print("Solved Transferring Water");
     currentStage = STARS;
     digitalWrite(transferPossibleLED, LOW);
@@ -216,11 +228,55 @@ void playStarryNight() {
   }
 }
 
+// Wifi and MQTT functions
+void callback(char* topic, byte* payload, unsigned int length) {
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  // TODO: Handle different messages
+  Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    Serial.print((char)payload[i]);
+  }
+  Serial.println();
+}
+
+void setup_wifi() {
+  Serial.println();
+  Serial.print("Setting up AP: ");
+  Serial.println(ssid);
+  
+  // Set the ESP32 as an access point
+  WiFi.softAP(ssid, password);
+
+  // Print the IP address of the access point
+  Serial.print("AP IP address: ");
+  Serial.println(WiFi.softAPIP());
+}
+
+void connect_to_mqtt() {
+  while (!mqttClient.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    // Attempt to connect
+    if (mqttClient.connect("ESP32Client")) {
+      Serial.println("connected");
+      // Subscribe to the admin topic
+      mqttClient.subscribe("admin");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(mqttClient.state());
+      Serial.println(" try again in 5 seconds");
+      // Wait 5 seconds before retrying
+      delay(5000);
+    }
+  }
+}
+
 /* Main Code */
 void setup() {
   // put your setup code here, to run once:
-  // Transferring water
   Serial.begin(115200);
+
+  // Transferring Water
   pinMode (ledsPin, OUTPUT);
   ws2812b.begin();
 
@@ -235,12 +291,30 @@ void setup() {
   pinMode(relayPin1, OUTPUT);
   digitalWrite(relayPin1, LOW);
 
+  // Starry night
+  pinMode(relayPin3, OUTPUT);
+  digitalWrite(relayPin3, LOW);
+
   currentStage = WHEELS;
 
   updateDisplay();
+
+  // connect to wifi
+  setup_wifi();
+
+  // set MQTT server and callback function
+  mqttClient.setServer(mqtt_server, mqtt_port);
+  mqttClient.setCallback(callback);
+
+  // Connect to MQTT broker
+  connect_to_mqtt();
 }
 
 void loop() {
+  if (!mqttClient.connected()) {
+    connect_to_mqtt();
+  }
+  mqttClient.loop();
   switch(currentStage) {
     case WHEELS:
     {
