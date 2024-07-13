@@ -30,17 +30,15 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: List root directory contents
+        run: ls -la
+      - name: List project directory contents
+        run: ls -la ./stars
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-      - name: Check current directory
-        run: pwd
-      - name: List root directory contents
-        run: ls -la
-      - name: List project directory contents
-        run: ls -la ./stars
       - name: Install dependencies
         run: npm ci
         working-directory: ./stars
