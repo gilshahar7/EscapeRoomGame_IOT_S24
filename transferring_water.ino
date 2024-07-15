@@ -20,12 +20,13 @@ PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
 // TRANSFERRING WATER
 const int numJugs = 3;
 const int capacities[] = {8,5,3};
-const int target = 5;
+const int target = 4;
 
-const byte transferButtonPin = 14;
-const byte fillingPins[] = {25,33,32};
-const byte transferPossibleLED = 12;
-const byte ledsPin = 13;
+const byte transferButtonPin = 35;
+const byte transferringWaterResetButtonPin = 34;
+const byte fillingPins[] = {25,26,27};
+const byte transferPossibleLED = 32;
+const byte ledsPin = 33;
 
 const int ledMapping[] = {0,1,2,3,4,5,6,7, 12,11,10,9,8, 13,14,15};
 Adafruit_NeoPixel ws2812b(16, ledsPin, NEO_GRB + NEO_KHZ800);
@@ -33,7 +34,7 @@ Adafruit_NeoPixel ws2812b(16, ledsPin, NEO_GRB + NEO_KHZ800);
 int currentValues[] = {8,0,0};
 
 // SPINNING WHEELS
-const byte spinningWheelsPin = 27;
+const byte spinningWheelsPin = 15;
 
 // STARRY NIGHT
 String inputString;
@@ -55,9 +56,9 @@ byte   rowPins[rowsCount] = {22, 4, 5, 19};
 Keypad keypad = Keypad(makeKeymap(keys),rowPins,columnPins,rowsCount,columsCount);
 
 // RELAY PINS
-const byte relayPin1 = 26;
-const byte relayPin2 = 2;
-const byte relayPin3 = 15;
+const byte relayPin1 = 13;
+const byte relayPin2 = 12;
+const byte relayPin3 = 14;
 
 /* CODE */
 // Transferring Water
@@ -166,7 +167,18 @@ bool isConnected(byte OutputPin, byte InputPin) {
   return isConnected;
 }
 
+void resetTransferringWater(){
+  currentValues[0] = 8;
+  currentValues[1] = 0;
+  currentValues[2] = 0;
+  updateDisplay();
+}
+
 void playTransferWater() {
+  int resetButtonState = digitalRead(transferringWaterResetButtonPin);
+  if (resetButtonState == LOW) {
+    resetTransferringWater();
+  }
   int transferButtonState = digitalRead(transferButtonPin);
   int fromJug = -1, toJug = -1;
   for (int i=0; i<numJugs; i++) {
@@ -282,6 +294,7 @@ void setup() {
 
   pinMode(relayPin2, OUTPUT);
   digitalWrite(relayPin2, LOW);
+  pinMode(transferringWaterResetButtonPin, INPUT_PULLUP);
   pinMode(transferButtonPin, INPUT_PULLUP);
   pinMode(transferPossibleLED, OUTPUT);
   digitalWrite(transferPossibleLED, LOW);
