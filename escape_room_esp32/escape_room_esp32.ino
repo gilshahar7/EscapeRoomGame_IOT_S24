@@ -2,18 +2,32 @@
 #include <Keypad.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <I2CKeyPad.h>
 
 enum stage {WHEELS, WATER, STARS, SOLVED};
 stage currentStage;
 
 /* CONSTANTS */
+// ESP MQTT TOPIC
+const char* ESP_TOPIC = "esp";
+
+// MQTT MESSAGES
+const char* WHEELS_HINT = "wheels_hint";
+const char* WHEELS_SOLVE = "wheels_solved";
+const char* WATER_RESET = "water_reset";
+const char* WATER_HINT = "water_hint";
+const char* WATER_SOLVE = "water_solved";
+const char* STARS_HINT = "star_hint";
+const char* STARS_SOLVE = "star_solved";
+const char* GLOBAL_RESET = "global_reset";
+
 // Wi-Fi
-const char* ssid = "ESP32_AP";
-const char* password = "12345678";
+const char* ssid = "AndroidAP";
+const char* password = "yuval3101";
 WiFiClient espClient;
 
 // MQTT
-const char* mqtt_server = "192.168.4.2";
+const char* mqtt_server = "192.168.39.237";
 const int mqtt_port = 1883;
 PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
 
@@ -21,6 +35,7 @@ PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
 const int numJugs = 3;
 const int capacities[] = {8,5,3};
 const int target = 4;
+bool isWaterHintGiven = false;
 
 const byte transferButtonPin = 35;
 const byte transferringWaterResetButtonPin = 34;
@@ -35,25 +50,18 @@ int currentValues[] = {8,0,0};
 
 // SPINNING WHEELS
 const byte spinningWheelsPin = 15;
+const byte spinningWheelsHintPin = BUILTIN_LED;
+bool isWheelsHintGiven = false;
 
 // STARRY NIGHT
 String inputString;
-String starSolution = "1234";
+String starSolution = "7031";
+bool isStarHintGiven = false;
 
 // KEYPAD
-const byte  rowsCount = 4;
-const byte  columsCount = 3;
+I2CKeyPad keypad(0x20);
 
-char keys[rowsCount][columsCount] = {
-  {'1','2','3'},
-  {'4','5','6'},
-  {'7','8','9'},
-  {'*','0','#'}
-};
-
-byte columnPins[columsCount] = {21, 23, 18 };
-byte   rowPins[rowsCount] = {22, 4, 5, 19};
-Keypad keypad = Keypad(makeKeymap(keys),rowPins,columnPins,rowsCount,columsCount);
+uint8_t prevKeyIndex = 16;
 
 // RELAY PINS
 const byte relayPin1 = 13;
@@ -89,13 +97,19 @@ void transfer(int from,int to){
 
   // check if the puzzle is solved and open the door.
   if (isTransferSolved()){
-    digitalWrite(relayPin2, HIGH);
-    delay(1000);
-    digitalWrite(relayPin2, LOW);
-    Serial.print("Solved Transferring Water");
-    currentStage = STARS;
-    digitalWrite(transferPossibleLED, LOW);
+    solveTransferringWater(false/*isAdmin*/);
   }
+}
+
+void solveTransferringWater(bool isAdmin) {
+  digitalWrite(relayPin2, HIGH);
+  delay(1000);
+  digitalWrite(relayPin2, LOW);
+  Serial.print("Solved Transferring Water");
+  currentStage = STARS;
+  if (!isAdmin)
+    mqttClient.publish(ESP_TOPIC, WATER_SOLVE);
+  digitalWrite(transferPossibleLED, LOW);
 }
 
 void blinkJug(int jug) {
@@ -168,15 +182,16 @@ bool isConnected(byte OutputPin, byte InputPin) {
 }
 
 void resetTransferringWater(){
-  currentValues[0] = 8;
-  currentValues[1] = 0;
-  currentValues[2] = 0;
+  currentValues[0] = isWaterHintGiven? 3 : 8;
+  currentValues[1] = isWaterHintGiven? 2 : 0;
+  currentValues[2] = isWaterHintGiven? 3 : 0;
   updateDisplay();
 }
 
 void playTransferWater() {
   int resetButtonState = digitalRead(transferringWaterResetButtonPin);
   if (resetButtonState == LOW) {
+    mqttClient.publish(ESP_TOPIC, WATER_RESET);
     resetTransferringWater();
   }
   int transferButtonState = digitalRead(transferButtonPin);
@@ -207,49 +222,74 @@ void playTransferWater() {
 }
 
 // SPINNING WHEELS
-void solveWheels() {
+void solveWheels(bool isAdmin) {
   digitalWrite(relayPin1, HIGH);
   delay(1000);
   digitalWrite(relayPin1, LOW);
   currentStage = WATER;
-  Serial.print("solved wheels");
+  if (!isAdmin)
+    mqttClient.publish(ESP_TOPIC, WHEELS_SOLVE);
+  Serial.println("solved wheels");
 }
 
 // STARRY NIGHT
-void solveStars() {
+void solveStars(bool isAdmin) {
   digitalWrite(relayPin3, HIGH);
   delay(1000);
   digitalWrite(relayPin3, LOW);
   currentStage = SOLVED;
+  if (!isAdmin)
+    mqttClient.publish(ESP_TOPIC, STARS_SOLVE);
   Serial.print("solved stars");
 }
 
 void playStarryNight() {
-  char key = keypad.getKey();
-  if (key) {
-    inputString += key;
-    Serial.println(inputString);
-  }
-  if (inputString.length() >= 4) {
-    if(inputString == starSolution) {
-      solveStars();
-    } else {
-      inputString = "";
-      Serial.println("WRONG PASSWORD");
+  char keys[] = "123 456 789 *0# N";
+  uint8_t index = keypad.getKey();
+  if (keys[prevKeyIndex] == 'N' && keys[index] != 'N') { // N = Not pressed
+    char key = keys[index];
+    if (key) {
+      inputString += key;
+      Serial.println(inputString);
+    }
+    if (inputString.length() >= 4) {
+      if(inputString == starSolution) {
+        solveStars(false/*isAdmin*/);
+      } else {
+        inputString = "";
+        Serial.println("WRONG PASSWORD");
+      }
     }
   }
+  prevKeyIndex = index;
 }
 
 // Wifi and MQTT functions
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
-  Serial.print(topic);
-  // TODO: Handle different messages
-  Serial.print("] ");
-  for (int i = 0; i < length; i++) {
-    Serial.print((char)payload[i]);
+  const String payloadString = String((char*)payload);
+  Serial.println(payloadString);
+  if (payloadString.indexOf(WHEELS_HINT) != -1) {
+    digitalWrite(spinningWheelsHintPin, HIGH);
+    isWheelsHintGiven = true;
+  } else if (payloadString.indexOf(WHEELS_SOLVE) != -1) {
+    solveWheels(true/*isAdmin*/);
+  } else if (payloadString.indexOf(WATER_RESET) != -1) {
+    resetTransferringWater();
+  } else if (payloadString.indexOf(WATER_HINT) != -1) {
+    resetTransferringWater();
+    transfer(0, 1); // 8, 0, 0 -> 3, 5, 0
+    transfer(1, 2); // 3, 5, 0 -> 3, 2, 3
+    isWaterHintGiven = true;
+  } else if (payloadString.indexOf(WATER_SOLVE) != -1) {
+    solveTransferringWater(true/*isAdmin*/);
+  } else if (payloadString.indexOf(STARS_HINT) != -1) {
+    isStarHintGiven = true;
+    // TODO: Think about possible hint
+  } else if (payloadString.indexOf(STARS_SOLVE) != -1) {
+    solveStars(true/*isAdmin*/);
+  } else if (payloadString.indexOf(GLOBAL_RESET) != -1) {
+    resetGlobal();
   }
-  Serial.println();
 }
 
 void setup_wifi() {
@@ -257,12 +297,14 @@ void setup_wifi() {
   Serial.print("Setting up AP: ");
   Serial.println(ssid);
   
+  // Set the ESP32 wifi to connect to hotspot
+  WiFi.begin(ssid, password);
   // Set the ESP32 as an access point
-  WiFi.softAP(ssid, password);
+  // WiFi.softAP(ssid, password);
 
   // Print the IP address of the access point
-  Serial.print("AP IP address: ");
-  Serial.println(WiFi.softAPIP());
+  // Serial.print("AP IP address: ");
+  // Serial.println(WiFi.softAPIP());
 }
 
 void connect_to_mqtt() {
@@ -283,6 +325,14 @@ void connect_to_mqtt() {
   }
 }
 
+void resetGlobal() {
+  isWheelsHintGiven = false;
+  isWaterHintGiven = false;
+  isStarHintGiven = false;
+  resetTransferringWater();
+  currentStage = WHEELS;
+}
+
 /* Main Code */
 void setup() {
   // put your setup code here, to run once:
@@ -301,12 +351,20 @@ void setup() {
 
   // Spinning wheels
   pinMode(spinningWheelsPin, INPUT_PULLUP);
+  pinMode(spinningWheelsHintPin, LOW);
   pinMode(relayPin1, OUTPUT);
   digitalWrite(relayPin1, LOW);
 
   // Starry night
   pinMode(relayPin3, OUTPUT);
   digitalWrite(relayPin3, LOW);
+
+  // Initialize Keypad
+  Wire.begin();
+  Wire.setClock(400000);
+  if (keypad.begin() == false) {
+    Serial.println("\nERROR: cannot communicate to keypad.\n");
+  }
 
   currentStage = WHEELS;
 
@@ -328,12 +386,13 @@ void loop() {
     connect_to_mqtt();
   }
   mqttClient.loop();
+
   switch(currentStage) {
     case WHEELS:
     {
       int solvedWheels = digitalRead(spinningWheelsPin);
       if (solvedWheels == HIGH) {
-        solveWheels();
+        solveWheels(false/*isAdmin*/);
       }
       break;
     }
