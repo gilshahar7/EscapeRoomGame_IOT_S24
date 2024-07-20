@@ -29,8 +29,7 @@ const char* password = "yuval3101";
 WiFiClient espClient;
 
 // MQTT
-// const char* mqtt_server = "192.168.39.237";
-const char* mqtt_server = "192.168.1.25";
+const char* mqtt_server = "192.168.39.237";
 const int mqtt_port = 1883;
 PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
 
