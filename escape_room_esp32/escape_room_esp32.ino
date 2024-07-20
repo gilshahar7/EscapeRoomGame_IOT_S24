@@ -1,8 +1,10 @@
 #include <Adafruit_NeoPixel.h>
-#include <Keypad.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <I2CKeyPad.h>
+#include <arduino-timer.h>
+#include <DIYables_4Digit7Segment_74HC595.h> // timer
+#include <CountDown.h>
 
 enum stage {WHEELS, WATER, STARS, SOLVED};
 stage currentStage;
@@ -27,7 +29,8 @@ const char* password = "yuval3101";
 WiFiClient espClient;
 
 // MQTT
-const char* mqtt_server = "192.168.39.237";
+// const char* mqtt_server = "192.168.39.237";
+const char* mqtt_server = "192.168.1.25";
 const int mqtt_port = 1883;
 PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
 
@@ -43,30 +46,46 @@ const byte fillingPins[] = {25,26,27};
 const byte transferPossibleLED = 32;
 const byte ledsPin = 33;
 
+const int numWaterLeds = 16;
 const int ledMapping[] = {0,1,2,3,4,5,6,7, 12,11,10,9,8, 13,14,15};
-Adafruit_NeoPixel ws2812b(16, ledsPin, NEO_GRB + NEO_KHZ800);
 
 int currentValues[] = {8,0,0};
 
 // SPINNING WHEELS
 const byte spinningWheelsPin = 15;
-const byte spinningWheelsHintPin = BUILTIN_LED;
+const int spinningWheelsHintLedIndex = 20;
 bool isWheelsHintGiven = false;
 
 // STARRY NIGHT
+auto blinkTimer = timer_create_default();
+
+const int numStarLeds = 4;
+const int blinkingStars[] = {16,17,18,19};
 String inputString;
 String starSolution = "7031";
 bool isStarHintGiven = false;
 
 // KEYPAD
+const int numKeypadLeds = 4;
+const int keypadLeds[] = {21, 22, 23, 24};
 I2CKeyPad keypad(0x20);
-
 uint8_t prevKeyIndex = 16;
+
+// LEDS
+Adafruit_NeoPixel ws2812b(numWaterLeds + numStarLeds + 1 + numKeypadLeds, ledsPin, NEO_GRB + NEO_KHZ800);
 
 // RELAY PINS
 const byte relayPin1 = 13;
 const byte relayPin2 = 12;
 const byte relayPin3 = 14;
+
+// TIMER
+CountDown timerCountDown(CountDown::SECONDS);
+
+const byte timerSCLK = 5;
+const byte timerRCLK = 18;
+const byte timerDIO = 19;
+DIYables_4Digit7Segment_74HC595 timerDisplay(timerSCLK, timerRCLK, timerDIO);
 
 /* CODE */
 // Transferring Water
@@ -90,7 +109,7 @@ void transfer(int from,int to){
   for(int i = 0; i < amountToTransfer; i++){
     currentValues[from]--;
     currentValues[to]++;
-    updateDisplay();
+    updateDisplayWater();
     // speed of pouring
     delay(500);
   }
@@ -147,7 +166,7 @@ bool isTransferSolved() {
   return false;
 }
 
-void updateDisplay() {
+void updateDisplayWater() {
   int ledIndex = 0;
   for (int jug = 0; jug < numJugs; jug++){
     for (int i = 0; i < capacities[jug]; i++){
@@ -185,7 +204,7 @@ void resetTransferringWater(){
   currentValues[0] = isWaterHintGiven? 3 : 8;
   currentValues[1] = isWaterHintGiven? 2 : 0;
   currentValues[2] = isWaterHintGiven? 3 : 0;
-  updateDisplay();
+  updateDisplayWater();
 }
 
 void playTransferWater() {
@@ -232,7 +251,55 @@ void solveWheels(bool isAdmin) {
   Serial.println("solved wheels");
 }
 
+bool blinkStarsisOn = false;
+int blinkStarsledNum = 0;
+
 // STARRY NIGHT
+// Blink the four star leds. Total time: 8 seconds.
+bool blinkStars(void *) {
+  if (blinkStarsisOn) {
+    ws2812b.setPixelColor(blinkingStars[blinkStarsledNum], ws2812b.Color(0, 0, 0));  // it only takes effect if pixels.show() is called
+    blinkStarsledNum = (blinkStarsledNum + 1) % 4;
+  } else {
+    ws2812b.setPixelColor(blinkingStars[blinkStarsledNum], ws2812b.Color(245, 100, 10));  // it only takes effect if pixels.show() is called
+  }
+  ws2812b.show();
+  blinkStarsisOn = !blinkStarsisOn;
+
+  return true; // repeat
+}
+
+void displayPasscodeLeds(int inputLen) {
+  for(int i=0; i<numKeypadLeds; ++i) {
+    if (i < inputLen) {
+      ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(25, 0, 0));  // it only takes effect if pixels.show() is called
+    } else {
+      ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0));  // it only takes effect if pixels.show() is called
+    }
+    ws2812b.show();
+  }
+}
+
+void blinkPassword(bool correct) {
+  for(int j = 0; j < 10; j++) {
+    for(int i = 0; i < numKeypadLeds; i++) {
+      ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(correct ? 0 : 25, correct ? 25 : 0, 0));  // it only takes effect if pixels.show() is called
+    }
+    ws2812b.show();
+    delay(100);
+
+    for(int i = 0; i < numKeypadLeds; i++) {
+      ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0));  // it only takes effect if pixels.show() is called
+    }
+    ws2812b.show();
+    delay(100);
+  }
+  for(int i = 0; i < numKeypadLeds; i++) {
+    ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0));  // it only takes effect if pixels.show() is called
+  }
+  ws2812b.show();
+}
+
 void solveStars(bool isAdmin) {
   digitalWrite(relayPin3, HIGH);
   delay(1000);
@@ -250,14 +317,15 @@ void playStarryNight() {
     char key = keys[index];
     if (key) {
       inputString += key;
-      Serial.println(inputString);
+      displayPasscodeLeds(inputString.length());
     }
     if (inputString.length() >= 4) {
       if(inputString == starSolution) {
+        blinkPassword(true/*correct*/);
         solveStars(false/*isAdmin*/);
       } else {
         inputString = "";
-        Serial.println("WRONG PASSWORD");
+        blinkPassword(false/*correct*/);
       }
     }
   }
@@ -269,7 +337,8 @@ void callback(char* topic, byte* payload, unsigned int length) {
   const String payloadString = String((char*)payload);
   Serial.println(payloadString);
   if (payloadString.indexOf(WHEELS_HINT) != -1) {
-    digitalWrite(spinningWheelsHintPin, HIGH);
+    ws2812b.setPixelColor(spinningWheelsHintLedIndex, ws2812b.Color(0, 200, 255));  // TODO: decide color
+    ws2812b.show();
     isWheelsHintGiven = true;
   } else if (payloadString.indexOf(WHEELS_SOLVE) != -1) {
     solveWheels(true/*isAdmin*/);
@@ -325,6 +394,24 @@ void connect_to_mqtt() {
   }
 }
 
+void displayRemainingTime() {
+  timerDisplay.loop();
+  const int MINUTE = 60;
+
+  uint32_t remainingSeconds = timerCountDown.remaining();
+  uint32_t second = remainingSeconds % MINUTE;
+  uint32_t minute = remainingSeconds / MINUTE;
+
+  const uint32_t timerDigits[] = {minute/10, minute%10, second/10, second%10};
+  
+  timerDisplay.clear();
+  for(int i=0; i<4; ++i) {
+    timerDisplay.setNumber(i+1, timerDigits[i]);
+  }
+  timerDisplay.setDot(2);
+  timerDisplay.show();
+}
+
 void resetGlobal() {
   isWheelsHintGiven = false;
   isWaterHintGiven = false;
@@ -339,7 +426,7 @@ void setup() {
   Serial.begin(115200);
 
   // Transferring Water
-  pinMode (ledsPin, OUTPUT);
+  pinMode (ledsPin, OUTPUT); // Also sets up starry night pins
   ws2812b.begin();
 
   pinMode(relayPin2, OUTPUT);
@@ -351,13 +438,23 @@ void setup() {
 
   // Spinning wheels
   pinMode(spinningWheelsPin, INPUT_PULLUP);
-  pinMode(spinningWheelsHintPin, LOW);
+  // Set hint LED
+  ws2812b.setPixelColor(spinningWheelsHintLedIndex, ws2812b.Color(0, 0, 0));
+  ws2812b.show();
+
   pinMode(relayPin1, OUTPUT);
   digitalWrite(relayPin1, LOW);
 
   // Starry night
   pinMode(relayPin3, OUTPUT);
   digitalWrite(relayPin3, LOW);
+
+  blinkTimer.every(1000, blinkStars); // Blink all stars every 9 seconds
+
+  // Timer display
+  timerCountDown.start(15 * 60); // 15 minutes
+
+  timerDisplay.clear();
 
   // Initialize Keypad
   Wire.begin();
@@ -368,7 +465,7 @@ void setup() {
 
   currentStage = WHEELS;
 
-  updateDisplay();
+  updateDisplayWater();
 
   // connect to wifi
   setup_wifi();
@@ -386,6 +483,12 @@ void loop() {
     connect_to_mqtt();
   }
   mqttClient.loop();
+
+  // display remaining time
+  displayRemainingTime();
+
+  // Blink stars constantly
+  blinkTimer.tick();
 
   switch(currentStage) {
     case WHEELS:
@@ -410,5 +513,5 @@ void loop() {
       break;
   }
   
-  delay(10); // this speeds up the simulation
+  // delay(10); // this speeds up the simulation
 }
