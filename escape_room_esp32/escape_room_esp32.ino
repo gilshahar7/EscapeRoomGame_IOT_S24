@@ -69,6 +69,7 @@ const int numKeypadLeds = 4;
 const int keypadLeds[] = {21, 22, 23, 24};
 I2CKeyPad keypad(0x20);
 uint8_t prevKeyIndex = 16;
+unsigned long keypadLastDebounceTime = 0;
 
 // LEDS
 Adafruit_NeoPixel ws2812b(numWaterLeds + numStarLeds + 1 + numKeypadLeds, ledsPin, NEO_GRB + NEO_KHZ800);
@@ -312,23 +313,28 @@ void solveStars(bool isAdmin) {
 void playStarryNight() {
   char keys[] = "123 456 789 *0# N";
   uint8_t index = keypad.getKey();
-  if (keys[prevKeyIndex] == 'N' && keys[index] != 'N') { // N = Not pressed
-    char key = keys[index];
-    if (key) {
-      inputString += key;
-      displayPasscodeLeds(inputString.length());
-    }
-    if (inputString.length() >= 4) {
-      if(inputString == starSolution) {
-        blinkPassword(true/*correct*/);
-        solveStars(false/*isAdmin*/);
-      } else {
-        inputString = "";
-        blinkPassword(false/*correct*/);
+  unsigned long currentTime = millis();
+
+  if (currentTime - keypadLastDebounceTime > 50) {
+    if (keys[prevKeyIndex] == 'N' && keys[index] != 'N') { // N = Not pressed
+      char key = keys[index];
+      if (key) {
+        inputString += key;
+        displayPasscodeLeds(inputString.length());
+      }
+      if (inputString.length() >= 4) {
+        if(inputString == starSolution) {
+          blinkPassword(true/*correct*/);
+          solveStars(false/*isAdmin*/);
+        } else {
+          inputString = "";
+          blinkPassword(false/*correct*/);
+        }
       }
     }
+    keypadLastDebounceTime = currentTime;
+    prevKeyIndex = index;
   }
-  prevKeyIndex = index;
 }
 
 // Wifi and MQTT functions
