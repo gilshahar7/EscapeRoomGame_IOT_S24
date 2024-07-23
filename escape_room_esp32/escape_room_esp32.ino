@@ -419,9 +419,14 @@ void displayRemainingTime() {
 
 void resetGlobal() {
   isWheelsHintGiven = false;
+  ws2812b.setPixelColor(spinningWheelsHintLedIndex, ws2812b.Color(0, 200, 255));  // TODO: decide color
+  ws2812b.show();
+
   isWaterHintGiven = false;
-  isStarHintGiven = false;
   resetTransferringWater();
+
+  isStarHintGiven = false;
+
   currentStage = WHEELS;
 }
 
