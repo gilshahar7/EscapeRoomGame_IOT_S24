@@ -25,7 +25,7 @@ const fixedPositions = [
   { name: "Forti", position: [0.5 * SCALE_FACTOR * X_STRETCH_FACTOR, -0.1 * SCALE_FACTOR, -0.9 * SCALE_FACTOR] },
   { name: "Minuss", position: [0.8 * SCALE_FACTOR * X_STRETCH_FACTOR, -0.3 * SCALE_FACTOR, 0.1 * SCALE_FACTOR] },
   { name: "Hun", position: [-0.9 * SCALE_FACTOR * X_STRETCH_FACTOR, -0.8 * SCALE_FACTOR, -0.7 * SCALE_FACTOR] },
-  { name: "Phives", position: [-0.3 * SCALE_FACTOR * X_STRETCH_FACTOR, -0.6 * SCALE_FACTOR, 0 * SCALE_FACTOR] },
+  // { name: "Phives", position: [-0.3 * SCALE_FACTOR * X_STRETCH_FACTOR, -0.6 * SCALE_FACTOR, 0 * SCALE_FACTOR] },
   { name: "Nyne", position: [0.2 * SCALE_FACTOR * X_STRETCH_FACTOR, -0.5 * SCALE_FACTOR, 0.2 * SCALE_FACTOR] },
   { name: "Xiero", position: [0.6 * SCALE_FACTOR * X_STRETCH_FACTOR, -0.7 * SCALE_FACTOR, -0.5 * SCALE_FACTOR] },
   { name: "Sikstee", position: [-0.4 * SCALE_FACTOR * X_STRETCH_FACTOR, 0.5 * SCALE_FACTOR, -0.4 * SCALE_FACTOR] },
