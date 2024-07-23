@@ -1,7 +1,8 @@
-import React, { useRef, useState, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Text, Line } from '@react-three/drei'
-import * as THREE from 'three'
+import React, { useRef, useState, useMemo } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Text, Line } from '@react-three/drei';
+import * as THREE from 'three';
+import OrientationNotification from './OrientationNotification';
 
 const SCALE_FACTOR = 2; // Adjust this factor to control the spread
 const X_STRETCH_FACTOR = 2; // Factor to stretch x-coordinates
@@ -163,6 +164,7 @@ function Dots() {
 function App() {
   return (
     <div style={{ width: '100vw', height: '100vh', backgroundColor: '#000' }}>
+      <OrientationNotification />
       <Canvas camera={{ position: [0, 0, 5] }}>
         <OrbitControls />
         <Dots />
