@@ -257,8 +257,9 @@ int blinkStarsledNum = 0;
 // STARRY NIGHT
 // Blink the four star leds. Total time: 8 seconds.
 bool blinkStars(void *) {
+  const float colorLow = 0.1;
   if (blinkStarsisOn) {
-    ws2812b.setPixelColor(blinkingStars[blinkStarsledNum], ws2812b.Color(0, 0, 0));  // it only takes effect if pixels.show() is called
+    ws2812b.setPixelColor(blinkingStars[blinkStarsledNum], ws2812b.Color(245*colorLow, 100*colorLow, 10*colorLow));  // it only takes effect if pixels.show() is called
     blinkStarsledNum = (blinkStarsledNum + 1) % 4;
   } else {
     ws2812b.setPixelColor(blinkingStars[blinkStarsledNum], ws2812b.Color(245, 100, 10));  // it only takes effect if pixels.show() is called
@@ -281,7 +282,7 @@ void displayPasscodeLeds(int inputLen) {
 }
 
 void blinkPassword(bool correct) {
-  for(int j = 0; j < 10; j++) {
+  for(int j = 0; j < 5; j++) {
     for(int i = 0; i < numKeypadLeds; i++) {
       ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(correct ? 0 : 25, correct ? 25 : 0, 0));  // it only takes effect if pixels.show() is called
     }
@@ -342,7 +343,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   const String payloadString = String((char*)payload);
   Serial.println(payloadString);
   if (payloadString.indexOf(WHEELS_HINT) != -1) {
-    ws2812b.setPixelColor(spinningWheelsHintLedIndex, ws2812b.Color(0, 200, 255));  // TODO: decide color
+    ws2812b.setPixelColor(spinningWheelsHintLedIndex, ws2812b.Color(0, 200, 255));
     ws2812b.show();
     isWheelsHintGiven = true;
   } else if (payloadString.indexOf(WHEELS_SOLVE) != -1) {
@@ -382,19 +383,20 @@ void setup_wifi() {
 }
 
 void connect_to_mqtt() {
-  while (!mqttClient.connected()) {
+  int tries = 3;
+  while (!mqttClient.connected() && tries-- > 0) {
     Serial.print("Attempting MQTT connection...");
     // Attempt to connect
     if (mqttClient.connect("ESP32Client")) {
       Serial.println("connected");
       // Subscribe to the admin topic
       mqttClient.subscribe("admin");
+      blinkPassword(true);
     } else {
       Serial.print("failed, rc=");
       Serial.print(mqttClient.state());
       Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
-      delay(5000);
+      blinkPassword(false);
     }
   }
 }
@@ -419,7 +421,7 @@ void displayRemainingTime() {
 
 void resetGlobal() {
   isWheelsHintGiven = false;
-  ws2812b.setPixelColor(spinningWheelsHintLedIndex, ws2812b.Color(0, 200, 255));  // TODO: decide color
+  ws2812b.setPixelColor(spinningWheelsHintLedIndex, ws2812b.Color(0, 0, 0));  // TODO: decide color
   ws2812b.show();
 
   isWaterHintGiven = false;
@@ -489,9 +491,6 @@ void setup() {
 }
 
 void loop() {
-  if (!mqttClient.connected()) {
-    connect_to_mqtt();
-  }
   mqttClient.loop();
 
   // display remaining time
