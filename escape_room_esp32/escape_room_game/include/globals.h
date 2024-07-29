@@ -53,11 +53,6 @@ const int ledMapping[] = {0,1,2,3,4,5,6,7, 12,11,10,9,8, 13,14,15};
 
 int currentValues[] = {8,0,0};
 
-// SPINNING WHEELS
-const byte spinningWheelsPin = 15;
-const int spinningWheelsHintLedIndex = 20;
-bool isWheelsHintGiven = false;
-
 // STARRY NIGHT
 auto blinkTimer = timer_create_default();
 
