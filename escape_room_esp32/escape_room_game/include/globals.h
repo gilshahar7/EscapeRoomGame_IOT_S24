@@ -37,21 +37,8 @@ const int mqtt_port = 1883;
 PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
 
 // TRANSFERRING WATER
-const int numJugs = 3;
-const int capacities[] = {8,5,3};
-const int target = 4;
-bool isWaterHintGiven = false;
-
-const byte transferButtonPin = 35;
-const byte transferringWaterResetButtonPin = 34;
-const byte fillingPins[] = {25,26,27};
-const byte transferPossibleLED = 32;
 const byte ledsPin = 33;
-
 const int numWaterLeds = 16;
-const int ledMapping[] = {0,1,2,3,4,5,6,7, 12,11,10,9,8, 13,14,15};
-
-int currentValues[] = {8,0,0};
 
 // STARRY NIGHT
 auto blinkTimer = timer_create_default();
