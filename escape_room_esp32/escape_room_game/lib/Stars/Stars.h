@@ -50,7 +50,7 @@ public:
         {
             _solveTime = currentTime;
             digitalWrite(_relayPin, LOW);
-            currentStage = WATER;
+            currentStage = SOLVED;
             if (!isAdmin)
                 mqttClient.publish(ESP_TOPIC, STARS_SOLVE);
             Serial.println("solved wheels");
