@@ -1,124 +1,20 @@
 #include "../include/globals.h"
 #include <Wheels.h>
 #include <Water.h>
+#include <Stars.h>
 
 Wheels wheels;
 Water water;
+Stars stars;
 
 /* CODE */
 // STARRY NIGHT
 // Blink the four star leds. Total time: 8 seconds.
-bool blinkStars(void *)
-{
-    const float colorLow = 0.1;
-    if (blinkStarsisOn)
-    {
-        ws2812b.setPixelColor(blinkingStars[blinkStarsledNum], ws2812b.Color(245 * colorLow, 100 * colorLow, 10 * colorLow)); // it only takes effect if pixels.show() is called
-        blinkStarsledNum = (blinkStarsledNum + 1) % 4;
-    }
-    else
-    {
-        ws2812b.setPixelColor(blinkingStars[blinkStarsledNum], ws2812b.Color(245, 100, 10)); // it only takes effect if pixels.show() is called
-    }
-    ws2812b.show();
-    blinkStarsisOn = !blinkStarsisOn;
-
-    return true; // repeat
-}
-
-void displayPasscodeLeds(int inputLen)
-{
-    for (int i = 0; i < numKeypadLeds; ++i)
-    {
-        if (i < inputLen)
-        {
-            ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(25, 0, 0)); // it only takes effect if pixels.show() is called
-        }
-        else
-        {
-            ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0)); // it only takes effect if pixels.show() is called
-        }
-        ws2812b.show();
-    }
-}
-
-void blinkPassword(bool correct)
-{
-    for (int j = 0; j < 5; j++)
-    {
-        for (int i = 0; i < numKeypadLeds; i++)
-        {
-            ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(correct ? 0 : 25, correct ? 25 : 0, 0)); // it only takes effect if pixels.show() is called
-        }
-        ws2812b.show();
-        delay(100);
-
-        for (int i = 0; i < numKeypadLeds; i++)
-        {
-            ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0)); // it only takes effect if pixels.show() is called
-        }
-        ws2812b.show();
-        delay(100);
-    }
-    for (int i = 0; i < numKeypadLeds; i++)
-    {
-        ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0)); // it only takes effect if pixels.show() is called
-    }
-    ws2812b.show();
-}
-
-void solveStars(bool isAdmin)
-{
-    digitalWrite(relayPin3, HIGH);
-    delay(1000);
-    digitalWrite(relayPin3, LOW);
-    currentStage = SOLVED;
-    if (!isAdmin)
-        mqttClient.publish(ESP_TOPIC, STARS_SOLVE);
-    Serial.print("solved stars");
-}
-
-void playStarryNight()
-{
-    char keys[] = "123 456 789 *0# N";
-    uint8_t index = keypad.getKey();
-    unsigned long currentTime = millis();
-
-    if (currentTime - keypadLastDebounceTime > 50)
-    {
-        if (keys[prevKeyIndex] == 'N' && keys[index] != 'N')
-        { // N = Not pressed
-            char key = keys[index];
-            if (key)
-            {
-                inputString += key;
-                displayPasscodeLeds(inputString.length());
-            }
-            if (inputString.length() >= 4)
-            {
-                if (inputString == starSolution)
-                {
-                    blinkPassword(true /*correct*/);
-                    solveStars(false /*isAdmin*/);
-                }
-                else
-                {
-                    inputString = "";
-                    blinkPassword(false /*correct*/);
-                }
-            }
-        }
-        keypadLastDebounceTime = currentTime;
-        prevKeyIndex = index;
-    }
-}
-
 void resetGlobal()
 {
     wheels.reset();
     water.reset(true /*global*/);
-
-    isStarHintGiven = false;
+    stars.reset();
 
     currentStage = WHEELS;
 }
@@ -150,12 +46,12 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
     else if (payloadString.indexOf(STARS_HINT) != -1)
     {
-        isStarHintGiven = true;
+        stars.hint();
         // TODO: Think about possible hint
     }
     else if (payloadString.indexOf(STARS_SOLVE) != -1)
     {
-        solveStars(true /*isAdmin*/);
+        stars.solve(true /*isAdmin*/);
     }
     else if (payloadString.indexOf(GLOBAL_RESET) != -1)
     {
@@ -181,8 +77,7 @@ void setup_wifi()
 
 void connect_to_mqtt()
 {
-    int tries = 3;
-    while (!mqttClient.connected() && tries-- > 0)
+    while (!mqttClient.connected() && connectionTries-- > 0)
     {
         Serial.print("Attempting MQTT connection...");
         // Attempt to connect
@@ -191,14 +86,14 @@ void connect_to_mqtt()
             Serial.println("connected");
             // Subscribe to the admin topic
             mqttClient.subscribe("admin");
-            blinkPassword(true);
+            utils::blinkKeypadLedsBlocking(true);
         }
         else
         {
             Serial.print("failed, rc=");
             Serial.print(mqttClient.state());
             Serial.println(" try again in 5 seconds");
-            blinkPassword(false);
+            utils::blinkKeypadLedsBlocking(false);
         }
     }
 }
@@ -234,17 +129,7 @@ void setup()
 
     wheels.setup();
     water.setup();
-
-    // Starry night
-    pinMode(relayPin3, OUTPUT);
-    digitalWrite(relayPin3, LOW);
-
-    blinkTimer.every(1000, blinkStars); // Blink all stars every 9 seconds
-
-    // Timer display
-    timerCountDown.start(15 * 60); // 15 minutes
-
-    timerDisplay.clear();
+    stars.setup();
 
     // Initialize Keypad
     Wire.begin();
@@ -265,6 +150,11 @@ void setup()
 
     // Connect to MQTT broker
     connect_to_mqtt();
+
+    // Timer display
+    timerCountDown.start(15 * 60); // 15 minutes
+
+    timerDisplay.clear();
 }
 
 void loop()
@@ -275,7 +165,7 @@ void loop()
     displayRemainingTime();
 
     // Blink stars constantly
-    blinkTimer.tick();
+    stars.blinkStars();
 
     switch (currentStage)
     {
@@ -291,12 +181,10 @@ void loop()
     }
     case STARS:
     {
-        playStarryNight();
+        stars.playStarryNight();
         break;
     }
     case SOLVED:
         break;
     }
-
-    // delay(10); // this speeds up the simulation
 }

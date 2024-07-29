@@ -219,7 +219,7 @@ public:
             ledsOffset += _capacities[i];
         }
         unsigned long currentTime = millis();
-        if (currentTime - _lastBlinkTime >= _transferInterval && _blinkCount > 0) {\
+        if (currentTime - _lastBlinkTime >= _blinkInterval && _blinkCount > 0) {
             _lastBlinkTime = currentTime;
             if (_light) {
                 for (int i = 0; i < _target; i++)

@@ -42,11 +42,11 @@ public:
         if (!_solved) {
             _solveTime = millis();
             _solved = true;
-            digitalWrite(relayPin1, HIGH);
+            digitalWrite(_relayPin, HIGH);
         }
         else if (currentTime - _solveTime >= 1000) {
             _solveTime = currentTime;
-            digitalWrite(relayPin1, LOW);
+            digitalWrite(_relayPin, LOW);
             currentStage = WATER;
             if (!isAdmin)
                 mqttClient.publish(ESP_TOPIC, WHEELS_SOLVE);

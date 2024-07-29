@@ -32,6 +32,8 @@ const char* password = "yuval3101";
 WiFiClient espClient;
 
 // MQTT
+int connectionTries = 3;
+bool connected = false;
 const char* mqtt_server = "192.168.39.237";
 const int mqtt_port = 1883;
 PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
@@ -41,15 +43,10 @@ const byte ledsPin = 33;
 const int numWaterLeds = 16;
 
 // STARRY NIGHT
-bool blinkStarsisOn = false;
-int blinkStarsledNum = 0;
 auto blinkTimer = timer_create_default();
 
 const int numStarLeds = 4;
-const int blinkingStars[] = {16,17,18,19};
-String inputString;
-String starSolution = "7031";
-bool isStarHintGiven = false;
+const int blinkingStars[4] = {16,17,18,19};
 
 // KEYPAD
 const int numKeypadLeds = 4;
@@ -60,11 +57,6 @@ unsigned long keypadLastDebounceTime = 0;
 
 // LEDS
 Adafruit_NeoPixel ws2812b(numWaterLeds + numStarLeds + 1 + numKeypadLeds, ledsPin, NEO_GRB + NEO_KHZ800);
-
-// RELAY PINS
-const byte relayPin1 = 13;
-const byte relayPin2 = 12;
-const byte relayPin3 = 14;
 
 // TIMER
 CountDown timerCountDown(CountDown::SECONDS);
