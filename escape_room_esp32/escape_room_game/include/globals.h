@@ -38,16 +38,6 @@ const char* mqtt_server = "192.168.39.237";
 const int mqtt_port = 1883;
 PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
 
-// TRANSFERRING WATER
-const byte ledsPin = 33;
-const int numWaterLeds = 16;
-
-// STARRY NIGHT
-auto blinkTimer = timer_create_default();
-
-const int numStarLeds = 4;
-const int blinkingStars[4] = {16,17,18,19};
-
 // KEYPAD
 const int numKeypadLeds = 4;
 const int keypadLeds[] = {21, 22, 23, 24};
@@ -56,6 +46,9 @@ uint8_t prevKeyIndex = 16;
 unsigned long keypadLastDebounceTime = 0;
 
 // LEDS
+const byte ledsPin = 33;
+const int numWaterLeds = 16;
+const int numStarLeds = 4;
 Adafruit_NeoPixel ws2812b(numWaterLeds + numStarLeds + 1 + numKeypadLeds, ledsPin, NEO_GRB + NEO_KHZ800);
 
 // TIMER

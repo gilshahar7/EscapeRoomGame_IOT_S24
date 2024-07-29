@@ -60,12 +60,12 @@ public:
             if (_blinkPause < 8) {
                 if (_blinkStars)
                 {
-                    ws2812b.setPixelColor(blinkingStars[_blinkStarsledNum], ws2812b.Color(245 * colorLow, 100 * colorLow, 10 * colorLow)); // it only takes effect if pixels.show() is called
+                    ws2812b.setPixelColor(_blinkingStars[_blinkStarsledNum], ws2812b.Color(245 * colorLow, 100 * colorLow, 10 * colorLow)); // it only takes effect if pixels.show() is called
                     _blinkStarsledNum = (_blinkStarsledNum + 1) % 4;
                 }
                 else
                 {
-                    ws2812b.setPixelColor(blinkingStars[_blinkStarsledNum], ws2812b.Color(245, 100, 10)); // it only takes effect if pixels.show() is called
+                    ws2812b.setPixelColor(_blinkingStars[_blinkStarsledNum], ws2812b.Color(245, 100, 10)); // it only takes effect if pixels.show() is called
                 }
                 ws2812b.show();
                 _blinkStars = !_blinkStars;
@@ -149,6 +149,7 @@ private:
 
     String inputString;
     const String starSolution = "7031";
+    const int _blinkingStars[4] = {16,17,18,19};
     const byte _relayPin = 14;
 };
 
