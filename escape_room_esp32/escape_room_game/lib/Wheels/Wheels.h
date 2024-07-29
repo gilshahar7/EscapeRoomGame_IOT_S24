@@ -7,7 +7,8 @@ class Wheels
 {
 public:
     Wheels() : _solveTime(0), _solved(false), _hintGiven(false) {}
-    void setup() {
+    void setup()
+    {
         pinMode(_puzzlePin, INPUT_PULLUP);
 
         pinMode(_relayPin, OUTPUT);
@@ -18,33 +19,40 @@ public:
         ws2812b.show();
     }
 
-    void reset() {
+    void reset()
+    {
         _hintGiven = false;
         _solved = false;
         ws2812b.setPixelColor(_hintLedIndex, ws2812b.Color(0, 0, 0));
         ws2812b.show();
     }
 
-    void checkSolved() {
-        if (digitalRead(_puzzlePin) == HIGH || _solved) {
-            solve(false/*isAdmin*/);
+    void checkSolved()
+    {
+        if (digitalRead(_puzzlePin) == HIGH || _solved)
+        {
+            solve(false /*isAdmin*/);
         }
     }
 
-    void hint() {
+    void hint()
+    {
         ws2812b.setPixelColor(_hintLedIndex, ws2812b.Color(0, 200, 255));
         ws2812b.show();
         _hintGiven = true;
     }
 
-    void solve(bool isAdmin) {
+    void solve(bool isAdmin)
+    {
         unsigned long currentTime = millis();
-        if (!_solved) {
+        if (!_solved)
+        {
             _solveTime = millis();
             _solved = true;
             digitalWrite(_relayPin, HIGH);
         }
-        else if (currentTime - _solveTime >= 1000) {
+        else if (currentTime - _solveTime >= 1000)
+        {
             _solveTime = currentTime;
             digitalWrite(_relayPin, LOW);
             currentStage = WATER;

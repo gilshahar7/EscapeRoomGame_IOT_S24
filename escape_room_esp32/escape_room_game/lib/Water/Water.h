@@ -8,20 +8,20 @@
 class Water
 {
 public:
-    Water() :
-        _lastTransferTime(0),
-        _transferState(false),
-        _blinkCount(BLINK_COUNT),
-        _lastBlinkTime(0),
-        _targetJug(-1),
-        _blinkState(true),
-        _light(true),
-        _lastConnectTime(0),
-        _connectState(false),
-        _solveTime(0),
-        _solved(false),
-        _hintGiven(false)
-    {}
+    Water() : _lastTransferTime(0),
+              _transferState(false),
+              _blinkCount(BLINK_COUNT),
+              _lastBlinkTime(0),
+              _targetJug(-1),
+              _blinkState(true),
+              _light(true),
+              _lastConnectTime(0),
+              _connectState(false),
+              _solveTime(0),
+              _solved(false),
+              _hintGiven(false)
+    {
+    }
 
     void setup()
     {
@@ -36,7 +36,8 @@ public:
 
     void reset(bool global)
     {
-        if (global) _hintGiven = false;
+        if (global)
+            _hintGiven = false;
         _currentValues[0] = _hintGiven ? 3 : 8;
         _currentValues[1] = _hintGiven ? 2 : 0;
         _currentValues[2] = _hintGiven ? 3 : 0;
@@ -103,11 +104,13 @@ public:
         digitalWrite(OutputPin, LOW);
 
         unsigned long currentTime = millis();
-        if (!_connectState) {
+        if (!_connectState)
+        {
             _lastConnectTime = currentTime;
             _connectState = true;
         }
-        else if (currentTime - _lastConnectTime >= _connectInterval) {
+        else if (currentTime - _lastConnectTime >= _connectInterval)
+        {
             _lastConnectTime = currentTime;
             _connectState = false;
 
@@ -168,21 +171,27 @@ public:
         {
             digitalWrite(_transferPossibleLED, LOW);
         }
-        
+
         // check if the puzzle is solved and open the door.
         if (isTransferSolved())
         {
-            if (_blinkState) {
+            if (_blinkState)
+            {
                 blinkJug();
-            } else {
+            }
+            else
+            {
                 solve(false /*isAdmin*/);
             }
         }
     }
-    
-    bool isTransferSolved() {
-        for(int i=0; i<_numJugs; i++){
-            if(_currentValues[i] == _target){
+
+    bool isTransferSolved()
+    {
+        for (int i = 0; i < _numJugs; i++)
+        {
+            if (_currentValues[i] == _target)
+            {
                 // Blink the LEDs rapidly in green for 3 seconds
                 _targetJug = i;
                 return true;
@@ -219,15 +228,19 @@ public:
             ledsOffset += _capacities[i];
         }
         unsigned long currentTime = millis();
-        if (currentTime - _lastBlinkTime >= _blinkInterval && _blinkCount > 0) {
+        if (currentTime - _lastBlinkTime >= _blinkInterval && _blinkCount > 0)
+        {
             _lastBlinkTime = currentTime;
-            if (_light) {
+            if (_light)
+            {
                 for (int i = 0; i < _target; i++)
                 {
                     ws2812b.setPixelColor(_ledMapping[i + ledsOffset], ws2812b.Color(0, 25, 0)); // it only takes effect if pixels.show() is called
                 }
                 ws2812b.show();
-            } else {
+            }
+            else
+            {
                 for (int i = 0; i < _target; i++)
                 {
                     ws2812b.setPixelColor(_ledMapping[i + ledsOffset], ws2812b.Color(0, 0, 0)); // it only takes effect if pixels.show() is called
@@ -237,8 +250,9 @@ public:
             }
             _light = !_light;
         }
-        
-        if (_blinkCount <= 0) {
+
+        if (_blinkCount <= 0)
+        {
             _blinkState = false;
             _blinkCount = BLINK_COUNT;
             for (int i = 0; i < _target; i++)
