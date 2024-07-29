@@ -41,6 +41,8 @@ const byte ledsPin = 33;
 const int numWaterLeds = 16;
 
 // STARRY NIGHT
+bool blinkStarsisOn = false;
+int blinkStarsledNum = 0;
 auto blinkTimer = timer_create_default();
 
 const int numStarLeds = 4;

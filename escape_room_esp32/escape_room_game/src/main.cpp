@@ -1,16 +1,11 @@
 #include "../include/globals.h"
-#include "../include/Wheels.h"
+#include <Wheels.h>
 #include <Water.h>
 
 Wheels wheels;
 Water water;
 
 /* CODE */
-// Transferring Water
-
-bool blinkStarsisOn = false;
-int blinkStarsledNum = 0;
-
 // STARRY NIGHT
 // Blink the four star leds. Total time: 8 seconds.
 bool blinkStars(void *)
