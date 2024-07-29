@@ -26,7 +26,7 @@ public:
     }
 
     void checkSolved() {
-        if (digitalRead(_puzzlePin) == HIGH) {
+        if (digitalRead(_puzzlePin) == HIGH || _solved) {
             solve(false/*isAdmin*/);
         }
     }
