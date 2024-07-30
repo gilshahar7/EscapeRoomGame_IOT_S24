@@ -3,8 +3,6 @@
 #include <Water.h>
 #include <Stars.h>
 
-#include <sstream>
-
 Wheels wheels;
 Water water;
 Stars stars;
@@ -18,7 +16,7 @@ void resetGlobal()
     water.reset(true /*global*/);
     stars.reset();
 
-    currentStage = WHEELS;
+    currentStage = READY;
 }
 
 // Wifi and MQTT functions
@@ -26,7 +24,12 @@ void callback(char *topic, byte *payload, unsigned int length)
 {
     const String payloadString = String((char *)payload);
     Serial.println(payloadString);
-    if (payloadString.indexOf(WHEELS_HINT) != -1)
+    if (payloadString.indexOf(START_GAME) != -1)
+    {
+        timerCountDown.start(gameDuration);
+        currentStage = WHEELS;
+    }
+    else if (payloadString.indexOf(WHEELS_HINT) != -1)
     {
         wheels.hint();
     }
@@ -58,6 +61,15 @@ void callback(char *topic, byte *payload, unsigned int length)
     else if (payloadString.indexOf(GLOBAL_RESET) != -1)
     {
         resetGlobal();
+    }
+    else if (payloadString.indexOf(ADD_MIN) != -1)
+    {
+        gameDuration += 60;
+    }
+    else if (payloadString.indexOf(SUB_MIN) != -1)
+    {
+        if (gameDuration > 60)
+            gameDuration -= 60;
     }
 }
 
@@ -102,20 +114,59 @@ void connect_to_mqtt()
 
 void displayRemainingTime()
 {
-    const int MINUTE = 60;
+    if (currentStage == SOLVED) {
+        return;
+    }
 
-    uint32_t remainingSeconds = timerCountDown.remaining();
+    const unsigned long currentTime = millis();
+
+    // Display remaining time
+    const int MINUTE = 60;
+    uint32_t remainingSeconds;
+
+    if (currentStage == READY)
+        remainingSeconds = gameDuration;
+    else
+        remainingSeconds = timerCountDown.remaining();
+
     uint32_t second = remainingSeconds % MINUTE;
     uint32_t minute = remainingSeconds / MINUTE;
 
-    // char timeString[] = {(char)(minute / 10), (char)(minute % 10), (char)(second / 10), (char)(second % 10), '\0'};
     std::string strTime = std::to_string(minute / 10) + std::to_string(minute % 10) + std::to_string(second / 10) + std::to_string(second % 10);
-    strTime[1] |= 0x80;
+
+    if (currentTime - lastTimerPublished > 500) {
+        lastTimerPublished = currentTime;
+        strTime.insert(2, ":");
+        mqttClient.publish(ESP_TIMER_TOPIC, strTime.c_str());
+    }
+
     char *timeString = const_cast<char*>(strTime.c_str());
+    timeString[1] |= 0x80; // Add dots
     
     timerDisplay.displayOn();
     timerDisplay.displayString(timeString);
     timerDisplay.setBrightness(TM1650_MAX_BRIGHT);
+}
+
+void handleResetStart()
+{
+    char keys[] = "123 456 789 *0# N";
+    uint8_t index = keypad.getKey();
+
+    if (keys[prevKeyIndex] == 'N' && keys[index] != 'N')
+    { // N = Not pressed
+        char key = keys[index];
+        if (key == '*')
+        {
+            timerCountDown.start(gameDuration);
+            currentStage = WHEELS;
+        }
+
+        if (key == '#') {
+            resetGlobal();
+            mqttClient.publish(ESP_TOPIC, GLOBAL_RESET);
+        }
+    }
 }
 
 /* Main Code */
@@ -139,7 +190,7 @@ void setup()
         Serial.println("\nERROR: cannot communicate to keypad.\n");
     }
 
-    currentStage = WHEELS;
+    currentStage = READY;
 
     // connect to wifi
     setup_wifi();
@@ -152,10 +203,9 @@ void setup()
     connect_to_mqtt();
 
     mqttClient.publish(ESP_TOPIC, GLOBAL_RESET);
+    mqttClient.publish(ESP_TIMER_TOPIC, "15:00");
 
     // Timer display
-    timerCountDown.start(15 * 60); // 15 minutes
-
     timerDisplay.init();
 }
 
@@ -171,6 +221,11 @@ void loop()
 
     switch (currentStage)
     {
+    case READY:
+    {
+        handleResetStart();
+        break;
+    }
     case WHEELS:
     {
         wheels.play();
@@ -187,6 +242,7 @@ void loop()
         break;
     }
     case SOLVED:
+        handleResetStart();
         break;
     }
 }

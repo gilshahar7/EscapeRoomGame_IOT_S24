@@ -10,6 +10,7 @@
 
 enum stage
 {
+	READY,
     WHEELS,
     WATER,
     STARS,
@@ -20,8 +21,10 @@ stage currentStage;
 /* CONSTANTS */
 // ESP MQTT TOPIC
 const char *ESP_TOPIC = "esp";
+const char* ESP_TIMER_TOPIC = "esp_timer";
 
 // MQTT MESSAGES
+const char *START_GAME = "start_game";
 const char *WHEELS_HINT = "wheels_hint";
 const char *WHEELS_SOLVE = "wheels_solved";
 const char *WATER_RESET = "water_reset";
@@ -30,6 +33,8 @@ const char *WATER_SOLVE = "water_solved";
 const char *STARS_HINT = "star_hint";
 const char *STARS_SOLVE = "star_solved";
 const char *GLOBAL_RESET = "global_reset";
+const char *ADD_MIN = "add_min";
+const char *SUB_MIN = "sub_min";
 
 // Wi-Fi
 const char *ssid = "AndroidAP";
@@ -57,6 +62,8 @@ const int numStarLeds = 4;
 Adafruit_NeoPixel ws2812b(numWaterLeds + numStarLeds + 1 + numKeypadLeds, ledsPin, NEO_GRB + NEO_KHZ800);
 
 // TIMER
+unsigned long lastTimerPublished = 0;
+unsigned long gameDuration = 15 * 60;
 CountDown timerCountDown(CountDown::SECONDS);
 TM1650 timerDisplay;
 
