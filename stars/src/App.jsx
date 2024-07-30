@@ -37,10 +37,10 @@ const fixedPositions = [
 ];
 
 const connections = [
-  'Xiero_Phorr_Hun_Dreddand_Nyne',
-  'Sev_Enti_Thurt_Tiwon',
-  'Aytee_Toonyne_NT-9',
-  'AT-2_Sikstee_Wonn'
+  // 'Xiero_Phorr_Hun_Dreddand_Nyne',
+  // 'Sev_Enti_Thurt_Tiwon',
+  // 'Aytee_Toonyne_NT-9',
+  // 'AT-2_Sikstee_Wonn'
 ];
 
 function ConnectingLine({ start, end }) {
