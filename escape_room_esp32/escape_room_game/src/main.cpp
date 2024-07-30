@@ -3,6 +3,8 @@
 #include <Water.h>
 #include <Stars.h>
 
+#include <sstream>
+
 Wheels wheels;
 Water water;
 Stars stars;
@@ -100,22 +102,20 @@ void connect_to_mqtt()
 
 void displayRemainingTime()
 {
-    timerDisplay.loop();
     const int MINUTE = 60;
 
     uint32_t remainingSeconds = timerCountDown.remaining();
     uint32_t second = remainingSeconds % MINUTE;
     uint32_t minute = remainingSeconds / MINUTE;
 
-    const uint32_t timerDigits[] = {minute / 10, minute % 10, second / 10, second % 10};
-
-    timerDisplay.clear();
-    for (int i = 0; i < 4; ++i)
-    {
-        timerDisplay.setNumber(i + 1, timerDigits[i]);
-    }
-    timerDisplay.setDot(2);
-    timerDisplay.show();
+    // char timeString[] = {(char)(minute / 10), (char)(minute % 10), (char)(second / 10), (char)(second % 10), '\0'};
+    std::string strTime = std::to_string(minute / 10) + std::to_string(minute % 10) + std::to_string(second / 10) + std::to_string(second % 10);
+    strTime[1] |= 0x80;
+    char *timeString = const_cast<char*>(strTime.c_str());
+    
+    timerDisplay.displayOn();
+    timerDisplay.displayString(timeString);
+    timerDisplay.setBrightness(TM1650_MAX_BRIGHT);
 }
 
 /* Main Code */
@@ -156,7 +156,7 @@ void setup()
     // Timer display
     timerCountDown.start(15 * 60); // 15 minutes
 
-    timerDisplay.clear();
+    timerDisplay.init();
 }
 
 void loop()

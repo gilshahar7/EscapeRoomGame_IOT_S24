@@ -5,9 +5,8 @@
 #include <WiFi.h>
 #include <PubSubClient.h>
 #include <I2CKeyPad.h>
-#include <arduino-timer.h>
-#include <DIYables_4Digit7Segment_74HC595.h> // timer
 #include <CountDown.h>
+#include <TM1650.h>
 
 enum stage
 {
@@ -59,10 +58,6 @@ Adafruit_NeoPixel ws2812b(numWaterLeds + numStarLeds + 1 + numKeypadLeds, ledsPi
 
 // TIMER
 CountDown timerCountDown(CountDown::SECONDS);
-
-const byte timerSCLK = 5;
-const byte timerRCLK = 18;
-const byte timerDIO = 19;
-DIYables_4Digit7Segment_74HC595 timerDisplay(timerSCLK, timerRCLK, timerDIO);
+TM1650 timerDisplay;
 
 #endif /* GLOBALS_H */
