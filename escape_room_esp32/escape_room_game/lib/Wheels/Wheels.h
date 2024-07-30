@@ -27,11 +27,11 @@ public:
         ws2812b.show();
     }
 
-    void checkSolved()
+    void play()
     {
         if (digitalRead(_puzzlePin) == HIGH || _solved)
         {
-            solve(false /*isAdmin*/);
+            solve();
         }
     }
 
@@ -42,7 +42,7 @@ public:
         _hintGiven = true;
     }
 
-    void solve(bool isAdmin)
+    void solve()
     {
         unsigned long currentTime = millis();
         if (!_solved)
@@ -56,9 +56,7 @@ public:
             _solveTime = currentTime;
             digitalWrite(_relayPin, LOW);
             currentStage = WATER;
-            if (!isAdmin)
-                mqttClient.publish(ESP_TOPIC, WHEELS_SOLVE);
-            Serial.println("solved wheels");
+            mqttClient.publish(ESP_TOPIC, WHEELS_SOLVE);
         }
     }
 

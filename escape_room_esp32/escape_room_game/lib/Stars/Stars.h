@@ -37,7 +37,7 @@ public:
         _hintGiven = true;
     }
 
-    void solve(bool isAdmin)
+    void solve()
     {
         unsigned long currentTime = millis();
         if (!_solved)
@@ -51,9 +51,7 @@ public:
             _solveTime = currentTime;
             digitalWrite(_relayPin, LOW);
             currentStage = SOLVED;
-            if (!isAdmin)
-                mqttClient.publish(ESP_TOPIC, STARS_SOLVE);
-            Serial.println("solved wheels");
+            mqttClient.publish(ESP_TOPIC, STARS_SOLVE);
         }
     }
 
@@ -102,7 +100,7 @@ public:
         }
     }
 
-    void playStarryNight()
+    void play()
     {
         char keys[] = "123 456 789 *0# N";
         uint8_t index = keypad.getKey();
@@ -139,9 +137,9 @@ public:
         {
             _blinkKeypadState = utils::blinkKeypadLeds(_correctPasscode);
         }
-        else if (_correctPasscode)
+        else if (_correctPasscode || _solved)
         {
-            solve(false /*isAdmin*/);
+            solve();
         }
     }
 

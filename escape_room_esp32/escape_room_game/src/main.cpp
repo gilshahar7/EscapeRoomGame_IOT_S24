@@ -30,7 +30,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
     else if (payloadString.indexOf(WHEELS_SOLVE) != -1)
     {
-        wheels.solve(true /*isAdmin*/);
+        wheels.solve();
     }
     else if (payloadString.indexOf(WATER_RESET) != -1)
     {
@@ -42,7 +42,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
     else if (payloadString.indexOf(WATER_SOLVE) != -1)
     {
-        water.solve(true /*isAdmin*/);
+        water.solve();
     }
     else if (payloadString.indexOf(STARS_HINT) != -1)
     {
@@ -51,7 +51,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
     else if (payloadString.indexOf(STARS_SOLVE) != -1)
     {
-        stars.solve(true /*isAdmin*/);
+        stars.solve();
     }
     else if (payloadString.indexOf(GLOBAL_RESET) != -1)
     {
@@ -151,6 +151,8 @@ void setup()
     // Connect to MQTT broker
     connect_to_mqtt();
 
+    mqttClient.publish(ESP_TOPIC, GLOBAL_RESET);
+
     // Timer display
     timerCountDown.start(15 * 60); // 15 minutes
 
@@ -171,17 +173,17 @@ void loop()
     {
     case WHEELS:
     {
-        wheels.checkSolved();
+        wheels.play();
         break;
     }
     case WATER:
     {
-        water.playTransferWater();
+        water.play();
         break;
     }
     case STARS:
     {
-        stars.playStarryNight();
+        stars.play();
         break;
     }
     case SOLVED:
