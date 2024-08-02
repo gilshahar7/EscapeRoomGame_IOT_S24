@@ -112,6 +112,16 @@ void connect_to_mqtt()
     }
 }
 
+/**
+ * @brief Displays the remaining time of the game.
+ * 
+ * This function calculates the remaining time of the game and displays it on the timer display.
+ * If the current stage is SOLVED, the function returns without doing anything.
+ * The remaining time is calculated based on the current stage and the game duration.
+ * The time is then converted into a string format and published to the MQTT client.
+ * The time string is also modified to add dots between the digits for better readability.
+ * Finally, the time string is displayed on the timer display with maximum brightness.
+ */
 void displayRemainingTime()
 {
     if (currentStage == SOLVED) {
@@ -148,6 +158,14 @@ void displayRemainingTime()
     timerDisplay.setBrightness(TM1650_MAX_BRIGHT);
 }
 
+/**
+ * @brief Handles the reset and start functionality.
+ * 
+ * This function is responsible for handling the reset and start functionality in the escape room game.
+ * It checks for key presses on the keypad and performs the corresponding actions based on the pressed key.
+ * If the '*' key is pressed, it starts the countdown timer and sets the current stage to WHEELS.
+ * If the '#' key is pressed, it resets the game globally and publishes a reset message to the MQTT client.
+ */
 void handleResetStart()
 {
     char keys[] = "123 456 789 *0# N";

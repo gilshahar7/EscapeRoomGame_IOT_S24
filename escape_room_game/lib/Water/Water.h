@@ -76,6 +76,15 @@ public:
         }
     }
 
+    /**
+     * Solves the water puzzle.
+     * 
+     * This function is responsible for solving the water puzzle. It checks if the puzzle has already been solved,
+     * and if not, it sets the solve time, marks the puzzle as solved, turns off the relay, and updates the current stage.
+     * If the puzzle has already been solved, it checks if enough time has passed since the last solve, and if so,
+     * it updates the solve time, turns on the relay, updates the blink state, updates the current stage, and publishes
+     * a message to the MQTT client.
+     */
     void solve()
     {
         unsigned long currentTime = millis();
@@ -96,6 +105,14 @@ public:
         }
     }
 
+    /**
+     * @brief Updates the display of the water jugs.
+     * 
+     * This function updates the display of the water jugs by setting the color of each LED
+     * based on the current water level in each jug. The LEDs are controlled using the ws2812b library.
+     * The LEDs are lit up with a blue color for the water level and turned off for the empty space.
+     * The changes take effect only when the `ws2812b.show()` function is called.
+     */
     void updateDisplay()
     {
         int ledIndex = 0;
@@ -136,6 +153,15 @@ public:
         return result;
     }
 
+    /**
+     * The `play` function is responsible for controlling the gameplay logic of the water puzzle in the escape room game.
+     * It checks the state of the hint, reset button, transfer button, and the connection between jugs.
+     * If the hint state is in the first or second transfer, it calls the `hint` function.
+     * If the reset button is pressed, it calls the `reset` function with the `global` parameter set to false.
+     * If the transfer button is pressed or the transfer state is true, it transfers water from one jug to another using the `transfer` function.
+     * It checks if the transfer is possible based on the current values and capacities of the jugs.
+     * If the puzzle is solved, it either blinks the jug or calls the `solve` function to open the door.
+     */
     void play()
     {
         if (_hintState == FIRST_TRANSFER || _hintState == SECOND_TRANSFER)
@@ -222,7 +248,13 @@ public:
         return false;
     }
 
-    // returns true if the transfer is completed
+    /**
+     * Transfers water from one container to another.
+     * 
+     * @param from The index of the container to transfer water from.
+     * @param to The index of the container to transfer water to.
+     * @return True if the transfer is complete, false otherwise.
+     */
     bool transfer(int from, int to)
     {
         // calculate how much water can be transferred
@@ -242,6 +274,16 @@ public:
         return false;
     }
 
+    /**
+     * @brief Blinks the jug LEDs based on the target jug level.
+     * 
+     * This function calculates the offset of the LEDs based on the target jug level and blinks the LEDs accordingly.
+     * It uses the millis() function to determine the current time and checks if enough time has passed to blink the LEDs.
+     * The LEDs are set to a specific color depending on the light state.
+     * If the blink count reaches zero, the LEDs are set to a different color and the blink state is set to false.
+     * 
+     * @note This function requires the ws2812b library to control the LEDs.
+     */
     void blinkJug()
     {
         int ledsOffset = 0;

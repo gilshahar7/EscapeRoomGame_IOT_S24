@@ -42,6 +42,14 @@ public:
         _hintGiven = true;
     }
 
+    /**
+     * Solves the puzzle by activating the wheels.
+     * If the puzzle has not been solved yet, it sets the solve time, marks the puzzle as solved,
+     * and activates the relay pin.
+     * If the puzzle has already been solved and the time since the last solve is greater than or equal to 1000 milliseconds,
+     * it updates the solve time, deactivates the relay pin, sets the current stage to WATER,
+     * and publishes a message to the MQTT topic.
+     */
     void solve()
     {
         unsigned long currentTime = millis();
