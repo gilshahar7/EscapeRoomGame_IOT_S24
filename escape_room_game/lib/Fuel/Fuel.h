@@ -101,7 +101,7 @@ public:
             _blinkState = true;
             digitalWrite(_relayPin, LOW);
             currentStage = STARS;
-            mqttClient.publish(ESP_TOPIC, WATER_SOLVE);
+            mqttClient.publish(ESP_TOPIC, FUEL_SOLVE);
         }
     }
 

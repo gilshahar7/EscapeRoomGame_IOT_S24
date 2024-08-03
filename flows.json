@@ -257,7 +257,7 @@
             },
             {
                 "t": "set",
-                "p": "waterState",
+                "p": "fuelState",
                 "pt": "global",
                 "to": "UNSOLVED",
                 "tot": "str"
@@ -296,7 +296,7 @@
         "z": "a4f96bc176866912",
         "g": "5df8587ac98e0dd7",
         "name": "Initialise Global Vars",
-        "func": "global.set(\"gameState\", \"READY\");\nglobal.set(\"wheelState\", \"UNSOLVED\");\nglobal.set(\"waterState\", \"UNSOLVED\");\nglobal.set(\"starState\", \"UNSOLVED\");\nreturn msg;",
+        "func": "global.set(\"gameState\", \"READY\");\nglobal.set(\"wheelState\", \"UNSOLVED\");\nglobal.set(\"fuelState\", \"UNSOLVED\");\nglobal.set(\"starState\", \"UNSOLVED\");\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -401,25 +401,9 @@
         "z": "a4f96bc176866912",
         "g": "172078d66a2c4e78",
         "name": "On System Start",
+        "mode": "link",
         "links": [
-            "ce5e1241.adb708",
-            "891fa554.e2eb",
-            "03bf85b03a6a40b2",
-            "a42117f2.e7b908",
-            "b382fdf1.42dfd",
-            "753e49af.e1fbf8",
-            "ab728aab.10a15",
-            "7a212126.b73c78",
-            "bca49e2.3ae506",
-            "fec95a4b.bb6bf",
-            "84bae66b.0b1488",
-            "91f5a57b8686c80a",
-            "46aaa4960e9ac869",
-            "e4bbd5899d3b356e",
-            "f64afdb2.ae6738",
-            "7fd4506cfed2714b",
-            "c4a8de8b032253c9",
-            "d22e738b256cdec6"
+            "03bf85b03a6a40b2"
         ],
         "x": 295,
         "y": 140,
@@ -516,8 +500,8 @@
         "links": [
             "0110abe8fcf440b0",
             "330b4585e0723247",
-            "f12ffecf0eaf50cb",
-            "78a6591e8ab9b6f6"
+            "78a6591e8ab9b6f6",
+            "f12ffecf0eaf50cb"
         ],
         "x": 75,
         "y": 840,
@@ -696,14 +680,14 @@
         "rules": [
             {
                 "t": "set",
-                "p": "waterState",
+                "p": "fuelState",
                 "pt": "msg",
                 "to": "HINT_GIVEN",
                 "tot": "str"
             },
             {
                 "t": "set",
-                "p": "waterState",
+                "p": "fuelState",
                 "pt": "global",
                 "to": "HINT_GIVEN",
                 "tot": "str"
@@ -745,14 +729,14 @@
         "rules": [
             {
                 "t": "set",
-                "p": "waterState",
+                "p": "fuelState",
                 "pt": "msg",
                 "to": "SOLVED",
                 "tot": "str"
             },
             {
                 "t": "set",
-                "p": "waterState",
+                "p": "fuelState",
                 "pt": "global",
                 "to": "SOLVED",
                 "tot": "str"
@@ -777,7 +761,7 @@
         "z": "a4f96bc176866912",
         "g": "c4d92acdbd42331d",
         "name": "global to msg",
-        "func": "msg.waterState = global.get(\"waterState\");\nreturn msg;",
+        "func": "msg.fuelState = global.get(\"fuelState\");\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -801,14 +785,14 @@
         "rules": [
             {
                 "t": "set",
-                "p": "waterState",
+                "p": "fuelState",
                 "pt": "msg",
                 "to": "UNSOLVED",
                 "tot": "str"
             },
             {
                 "t": "set",
-                "p": "waterState",
+                "p": "fuelState",
                 "pt": "global",
                 "to": "UNSOLVED",
                 "tot": "str"
@@ -1115,7 +1099,7 @@
         "width": 6,
         "height": 1,
         "passthru": false,
-        "label": "wheels hint",
+        "label": "align hint",
         "tooltip": "",
         "color": "",
         "bgcolor": "",
@@ -1125,7 +1109,7 @@
         "payloadType": "str",
         "topic": "admin",
         "topicType": "str",
-        "x": 130,
+        "x": 120,
         "y": 960,
         "wires": [
             [
@@ -1145,7 +1129,7 @@
         "width": 6,
         "height": 1,
         "passthru": false,
-        "label": "wheels solve",
+        "label": "align solve",
         "tooltip": "",
         "color": "",
         "bgcolor": "",
@@ -1175,17 +1159,17 @@
         "width": 6,
         "height": 1,
         "passthru": false,
-        "label": "water reset",
+        "label": "fuel reset",
         "tooltip": "",
         "color": "",
         "bgcolor": "",
         "className": "",
         "icon": "",
-        "payload": "water_reset",
+        "payload": "fuel_reset",
         "payloadType": "str",
         "topic": "admin",
         "topicType": "str",
-        "x": 130,
+        "x": 120,
         "y": 1260,
         "wires": [
             [
@@ -1205,13 +1189,13 @@
         "width": 6,
         "height": 1,
         "passthru": false,
-        "label": "water hint",
+        "label": "fuel hint",
         "tooltip": "",
         "color": "",
         "bgcolor": "",
         "className": "",
         "icon": "",
-        "payload": "water_hint",
+        "payload": "fuel_hint",
         "payloadType": "str",
         "topic": "admin",
         "topicType": "str",
@@ -1235,17 +1219,17 @@
         "width": 6,
         "height": 1,
         "passthru": false,
-        "label": "water solve",
+        "label": "fuel solve",
         "tooltip": "",
         "color": "",
         "bgcolor": "",
         "className": "",
         "icon": "",
-        "payload": "water_solve",
+        "payload": "fuel_solve",
         "payloadType": "str",
         "topic": "admin",
         "topicType": "str",
-        "x": 130,
+        "x": 120,
         "y": 1340,
         "wires": [
             [
@@ -1347,7 +1331,7 @@
         "height": 1,
         "name": "",
         "label": "Game:",
-        "format": "Spinning Wheels",
+        "format": "Aligning Constellations",
         "layout": "row-center",
         "className": "",
         "style": false,
@@ -1369,7 +1353,7 @@
         "height": 1,
         "name": "",
         "label": "State: ",
-        "format": "{{msg.waterState}}",
+        "format": "{{msg.fuelState}}",
         "layout": "row-spread",
         "className": "",
         "style": false,
@@ -1391,7 +1375,7 @@
         "height": 1,
         "name": "",
         "label": "Game:",
-        "format": "Transferring Water",
+        "format": "Managing Fuel",
         "layout": "row-center",
         "className": "",
         "style": false,
@@ -1684,7 +1668,7 @@
         "z": "a4f96bc176866912",
         "g": "c4d92acdbd42331d",
         "name": "process mqtt",
-        "func": "if (global.get(\"waterState\") != \"SOLVED\") {\n    if (msg.payload == \"water_hint\") {\n        msg.waterState = \"HINT_GIVEN\";\n        global.set(\"waterState\", \"HINT_GIVEN\");\n    } else if (msg.payload == \"water_solved\") {\n        msg.waterState = \"SOLVED\";\n        global.set(\"waterState\", \"SOLVED\");\n    }\n}\n\nif (msg.payload == \"global_reset\") {\n    msg.waterState = \"UNSOLVED\";\n    global.set(\"waterState\", \"UNSOLVED\");\n}\n\nreturn msg;",
+        "func": "if (global.get(\"fuelState\") != \"SOLVED\") {\n    if (msg.payload == \"fuel_hint\") {\n        msg.fuelState = \"HINT_GIVEN\";\n        global.set(\"fuelState\", \"HINT_GIVEN\");\n    } else if (msg.payload == \"fuel_solved\") {\n        msg.fuelState = \"SOLVED\";\n        global.set(\"fuelState\", \"SOLVED\");\n    }\n}\n\nif (msg.payload == \"global_reset\") {\n    msg.fuelState = \"UNSOLVED\";\n    global.set(\"fuelState\", \"UNSOLVED\");\n}\n\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,

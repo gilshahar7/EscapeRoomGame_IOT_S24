@@ -37,15 +37,15 @@ void callback(char *topic, byte *payload, unsigned int length)
     {
         wheels.solve();
     }
-    else if (payloadString.indexOf(WATER_RESET) != -1)
+    else if (payloadString.indexOf(FUEL_RESET) != -1)
     {
         fuel.reset(false /*global*/);
     }
-    else if (payloadString.indexOf(WATER_HINT) != -1)
+    else if (payloadString.indexOf(FUEL_HINT) != -1)
     {
         fuel.hint();
     }
-    else if (payloadString.indexOf(WATER_SOLVE) != -1)
+    else if (payloadString.indexOf(FUEL_SOLVE) != -1)
     {
         fuel.solve();
     }
