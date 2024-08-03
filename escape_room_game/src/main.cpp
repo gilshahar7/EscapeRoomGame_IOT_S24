@@ -4,7 +4,7 @@
 #include <Stars.h>
 
 Wheels wheels;
-Water water;
+Fuel fuel;
 Stars stars;
 
 /* CODE */
@@ -13,7 +13,7 @@ Stars stars;
 void resetGlobal()
 {
     wheels.reset();
-    water.reset(true /*global*/);
+    fuel.reset(true /*global*/);
     stars.reset();
 
     currentStage = READY;
@@ -39,15 +39,15 @@ void callback(char *topic, byte *payload, unsigned int length)
     }
     else if (payloadString.indexOf(WATER_RESET) != -1)
     {
-        water.reset(false /*global*/);
+        fuel.reset(false /*global*/);
     }
     else if (payloadString.indexOf(WATER_HINT) != -1)
     {
-        water.hint();
+        fuel.hint();
     }
     else if (payloadString.indexOf(WATER_SOLVE) != -1)
     {
-        water.solve();
+        fuel.solve();
     }
     else if (payloadString.indexOf(STARS_HINT) != -1)
     {
@@ -193,11 +193,11 @@ void setup()
     // put your setup code here, to run once:
     Serial.begin(115200);
 
-    pinMode(ledsPin, OUTPUT); // transferring water leds + wheels hint led + starry night leds + keypad leds
+    pinMode(ledsPin, OUTPUT); // transferring fuel leds + wheels hint led + starry night leds + keypad leds
     ws2812b.begin();
 
     wheels.setup();
-    water.setup();
+    fuel.setup();
     stars.setup();
 
     // Initialize Keypad
@@ -251,7 +251,7 @@ void loop()
     }
     case WATER:
     {
-        water.play();
+        fuel.play();
         break;
     }
     case STARS:

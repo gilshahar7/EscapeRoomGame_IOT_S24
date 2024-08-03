@@ -1,5 +1,5 @@
-#ifndef WATER_H
-#define WATER_H
+#ifndef FUEL_H
+#define FUEL_H
 
 #include "globals.h"
 
@@ -13,23 +13,23 @@ enum hintState
     HINT_GIVEN
 };
 
-class Water
+class Fuel
 {
 public:
-    Water() : _lastTransferTime(0),
-              _transferState(false),
-              _fromJug(-1),
-              _toJug(-1),
-              _blinkCount(BLINK_COUNT),
-              _lastBlinkTime(0),
-              _targetJug(-1),
-              _blinkState(true),
-              _light(true),
-              _lastConnectTime(0),
-              _connectState(false),
-              _solveTime(0),
-              _solved(false),
-              _hintState(OFF)
+    Fuel() : _lastTransferTime(0),
+             _transferState(false),
+             _fromTank(-1),
+             _toTank(-1),
+             _blinkCount(BLINK_COUNT),
+             _lastBlinkTime(0),
+             _targetTank(-1),
+             _blinkState(true),
+             _light(true),
+             _lastConnectTime(0),
+             _connectState(false),
+             _solveTime(0),
+             _solved(false),
+             _hintState(OFF)
     {
     }
 
@@ -77,9 +77,9 @@ public:
     }
 
     /**
-     * Solves the water puzzle.
+     * Solves the fuel puzzle.
      * 
-     * This function is responsible for solving the water puzzle. It checks if the puzzle has already been solved,
+     * This function is responsible for solving the fuel puzzle. It checks if the puzzle has already been solved,
      * and if not, it sets the solve time, marks the puzzle as solved, turns off the relay, and updates the current stage.
      * If the puzzle has already been solved, it checks if enough time has passed since the last solve, and if so,
      * it updates the solve time, turns on the relay, updates the blink state, updates the current stage, and publishes
@@ -106,21 +106,21 @@ public:
     }
 
     /**
-     * @brief Updates the display of the water jugs.
+     * @brief Updates the display of the fuel jugs.
      * 
-     * This function updates the display of the water jugs by setting the color of each LED
-     * based on the current water level in each jug. The LEDs are controlled using the ws2812b library.
-     * The LEDs are lit up with a blue color for the water level and turned off for the empty space.
+     * This function updates the display of the fuel jugs by setting the color of each LED
+     * based on the current fuel level in each tank. The LEDs are controlled using the ws2812b library.
+     * The LEDs are lit up with a blue color for the fuel level and turned off for the empty space.
      * The changes take effect only when the `ws2812b.show()` function is called.
      */
     void updateDisplay()
     {
         int ledIndex = 0;
-        for (int jug = 0; jug < _numJugs; jug++)
+        for (int tank = 0; tank < _numTanks; tank++)
         {
-            for (int i = 0; i < _capacities[jug]; i++)
+            for (int i = 0; i < _capacities[tank]; i++)
             {
-                if (i < _currentValues[jug])
+                if (i < _currentValues[tank])
                 {
                     ws2812b.setPixelColor(_ledMapping[ledIndex], ws2812b.Color(0, 0, 25)); // it only takes effect if pixels.show() is called
                 }
@@ -154,13 +154,13 @@ public:
     }
 
     /**
-     * The `play` function is responsible for controlling the gameplay logic of the water puzzle in the escape room game.
+     * The `play` function is responsible for controlling the gameplay logic of the fuel puzzle in the escape room game.
      * It checks the state of the hint, reset button, transfer button, and the connection between jugs.
      * If the hint state is in the first or second transfer, it calls the `hint` function.
      * If the reset button is pressed, it calls the `reset` function with the `global` parameter set to false.
-     * If the transfer button is pressed or the transfer state is true, it transfers water from one jug to another using the `transfer` function.
+     * If the transfer button is pressed or the transfer state is true, it transfers fuel from one tank to another using the `transfer` function.
      * It checks if the transfer is possible based on the current values and capacities of the jugs.
-     * If the puzzle is solved, it either blinks the jug or calls the `solve` function to open the door.
+     * If the puzzle is solved, it either blinks the tank or calls the `solve` function to open the door.
      */
     void play()
     {
@@ -179,39 +179,39 @@ public:
 
         if (!_transferState)
         {
-            _fromJug = -1;
-            _toJug = -1;
-            for (int i = 0; i < _numJugs; i++)
+            _fromTank = -1;
+            _toTank = -1;
+            for (int i = 0; i < _numTanks; i++)
             {
-                for (int j = 0; j < _numJugs; j++)
+                for (int j = 0; j < _numTanks; j++)
                 {
                     if (i == j)
                         continue;
                     if (isConnected(_fillingPins[i], _fillingPins[j]))
                     {
-                        _fromJug = j;
-                        _toJug = i;
+                        _fromTank = j;
+                        _toTank = i;
                         break;
                     }
                 }
             }
         }
 
-        if ((_fromJug != -1 && _toJug != -1) || _transferState)
+        if ((_fromTank != -1 && _toTank != -1) || _transferState)
         {
-            if (_currentValues[_fromJug] > 0 && _currentValues[_toJug] < _capacities[_toJug])
+            if (_currentValues[_fromTank] > 0 && _currentValues[_toTank] < _capacities[_toTank])
             {
                 digitalWrite(_transferPossibleLED, HIGH);
                 if (transferButtonState == LOW || _transferState)
                 {
                     _transferState = true;
-                    transfer(_fromJug, _toJug);
+                    transfer(_fromTank, _toTank);
                 }
             }
             else
             {
                 _transferState = false;
-                _fromJug = _toJug = -1;
+                _fromTank = _toTank = -1;
                 digitalWrite(_transferPossibleLED, LOW);
             }
         }
@@ -225,7 +225,7 @@ public:
         {
             if (_blinkState)
             {
-                blinkJug();
+                blinkTank();
             }
             else
             {
@@ -236,12 +236,12 @@ public:
 
     bool isTransferSolved()
     {
-        for (int i = 0; i < _numJugs; i++)
+        for (int i = 0; i < _numTanks; i++)
         {
             if (_currentValues[i] == _target)
             {
                 // Blink the LEDs rapidly in green for 3 seconds
-                _targetJug = i;
+                _targetTank = i;
                 return true;
             }
         }
@@ -249,15 +249,15 @@ public:
     }
 
     /**
-     * Transfers water from one container to another.
+     * Transfers fuel from one container to another.
      * 
-     * @param from The index of the container to transfer water from.
-     * @param to The index of the container to transfer water to.
+     * @param from The index of the container to transfer fuel from.
+     * @param to The index of the container to transfer fuel to.
      * @return True if the transfer is complete, false otherwise.
      */
     bool transfer(int from, int to)
     {
-        // calculate how much water can be transferred
+        // calculate how much fuel can be transferred
         int amountToTransfer = min(_currentValues[from], _capacities[to] - _currentValues[to]);
 
         // perform the transfer gradually
@@ -275,19 +275,19 @@ public:
     }
 
     /**
-     * @brief Blinks the jug LEDs based on the target jug level.
+     * @brief Blinks the tank LEDs based on the target tank level.
      * 
-     * This function calculates the offset of the LEDs based on the target jug level and blinks the LEDs accordingly.
+     * This function calculates the offset of the LEDs based on the target tank level and blinks the LEDs accordingly.
      * It uses the millis() function to determine the current time and checks if enough time has passed to blink the LEDs.
      * The LEDs are set to a specific color depending on the light state.
      * If the blink count reaches zero, the LEDs are set to a different color and the blink state is set to false.
      * 
      * @note This function requires the ws2812b library to control the LEDs.
      */
-    void blinkJug()
+    void blinkTank()
     {
         int ledsOffset = 0;
-        for (int i = 0; i < _targetJug; i++)
+        for (int i = 0; i < _targetTank; i++)
         {
             ledsOffset += _capacities[i];
         }
@@ -332,14 +332,14 @@ private:
     const unsigned long _transferInterval = 500;
     unsigned long _lastTransferTime;
     bool _transferState;
-    int _fromJug;
-    int _toJug;
+    int _fromTank;
+    int _toTank;
 
     // blinking state variables
     const unsigned long _blinkInterval = 100;
     int _blinkCount;
     unsigned long _lastBlinkTime;
-    int _targetJug;
+    int _targetTank;
     bool _blinkState;
     bool _light;
 
@@ -354,7 +354,7 @@ private:
     hintState _hintState;
 
     // puzzle variables
-    const int _numJugs = 3;
+    const int _numTanks = 3;
     const int _capacities[3] = {8, 5, 3};
     const int _target = 4;
     int _currentValues[3] = {8, 0, 0};
@@ -368,4 +368,4 @@ private:
     const int _ledMapping[16] = {0, 1, 2, 3, 4, 5, 6, 7, 12, 11, 10, 9, 8, 13, 14, 15};
 };
 
-#endif /* WATER_H */
+#endif /* FUEL_H */
