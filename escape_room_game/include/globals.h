@@ -6,7 +6,7 @@
 #include <PubSubClient.h>
 #include <I2CKeyPad.h>
 #include <CountDown.h>
-#include <TM1650.h>
+#include <HT16K33.h>
 
 enum stage
 {
@@ -65,6 +65,6 @@ Adafruit_NeoPixel ws2812b(numFuelLeds + numStarLeds + 1 + numKeypadLeds, ledsPin
 unsigned long lastTimerPublished = 0;
 unsigned long gameDuration = 15 * 60;
 CountDown timerCountDown(CountDown::SECONDS);
-TM1650 timerDisplay;
+HT16K33 timerDisplay(0x70);
 
 #endif /* GLOBALS_H */

@@ -149,13 +149,8 @@ void displayRemainingTime()
         strTime.insert(2, ":");
         mqttClient.publish(ESP_TIMER_TOPIC, strTime.c_str());
     }
-
-    char *timeString = const_cast<char*>(strTime.c_str());
-    timeString[1] |= 0x80; // Add dots
     
-    timerDisplay.displayOn();
-    timerDisplay.displayString(timeString);
-    timerDisplay.setBrightness(TM1650_MAX_BRIGHT);
+    timerDisplay.displayTime(minute, second);
 }
 
 /**
@@ -224,7 +219,9 @@ void setup()
     mqttClient.publish(ESP_TIMER_TOPIC, "15:00");
 
     // Timer display
-    timerDisplay.init();
+    timerDisplay.begin();
+    timerDisplay.displayOn();
+    timerDisplay.setDigits(4);
 }
 
 void loop()
