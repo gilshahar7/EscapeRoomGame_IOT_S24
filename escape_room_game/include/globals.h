@@ -12,7 +12,7 @@ enum stage
 {
 	READY,
     WHEELS,
-    WATER,
+    FUEL,
     STARS,
     SOLVED
 };
@@ -57,9 +57,9 @@ unsigned long keypadLastDebounceTime = 0;
 
 // LEDS
 const byte ledsPin = 33;
-const int numWaterLeds = 16;
+const int numFuelLeds = 16;
 const int numStarLeds = 4;
-Adafruit_NeoPixel ws2812b(numWaterLeds + numStarLeds + 1 + numKeypadLeds, ledsPin, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel ws2812b(numFuelLeds + numStarLeds + 1 + numKeypadLeds, ledsPin, NEO_GRB + NEO_KHZ800);
 
 // TIMER
 unsigned long lastTimerPublished = 0;

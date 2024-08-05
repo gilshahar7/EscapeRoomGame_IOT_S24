@@ -1,6 +1,6 @@
 #include "../include/globals.h"
 #include <Wheels.h>
-#include <Water.h>
+#include <Fuel.h>
 #include <Stars.h>
 
 Wheels wheels;
@@ -249,7 +249,7 @@ void loop()
         wheels.play();
         break;
     }
-    case WATER:
+    case FUEL:
     {
         fuel.play();
         break;
