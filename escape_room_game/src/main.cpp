@@ -19,6 +19,13 @@ void resetGlobal()
     currentStage = READY;
 }
 
+void handleCompartments()
+{
+    wheels.compartment.handle();
+    fuel.compartment.handle();
+    stars.compartment.handle();
+}
+
 // Wifi and MQTT functions
 void callback(char *topic, byte *payload, unsigned int length)
 {
@@ -70,41 +77,68 @@ void callback(char *topic, byte *payload, unsigned int length)
         if (gameDuration > 60)
             gameDuration -= 60;
     }
+    else if (payloadString.indexOf(COMPARTMENT_OPEN1) != -1)
+    {
+        wheels.compartment.open();
+    }
+    else if (payloadString.indexOf(COMPARTMENT_OPEN2) != -1)
+    {
+        fuel.compartment.open();
+    }
+    else if (payloadString.indexOf(COMPARTMENT_OPEN3) != -1)
+    {
+        stars.compartment.open();
+    }
 }
 
 void setup_wifi()
 {
-    Serial.println();
-    Serial.print("Setting up AP: ");
-    Serial.println(ssid);
+    WiFiManager wifiManager;
+    if (!wifiManager.autoConnect("escape_room_game_AP")) {
+        Serial.println("Failed to connect and hit timeout");
+    }
+    Serial.println("Connected to WiFi!");
 
-    // Set the ESP32 wifi to connect to hotspot
-    WiFi.begin(ssid, password);
-    // Set the ESP32 as an access point
-    // WiFi.softAP(ssid, password);
-
-    // Print the IP address of the access point
-    // Serial.print("AP IP address: ");
-    // Serial.println(WiFi.softAPIP());
+    if (!MDNS.begin("esp32")) {
+        Serial.println("Error setting up MDNS responder!");
+    }
 }
 
 void connect_to_mqtt()
 {
-    while (!mqttClient.connected() && connectionTries-- > 0)
+    MDNS.addService("mqtt", "tcp", mqtt_port);
+
+    int mqttBrokerAddress = MDNS.queryService("mqtt", "tcp");
+
+    if (mqttBrokerAddress == 0) {
+        Serial.println("MQTT service not found.");
+        utils::blinkKeypadLedsBlocking(false);
+    } else {
+        mqtt_ip = MDNS.IP(mqttBrokerAddress-1);
+        utils::setKeyPadLEDColors(0, 0, 255);
+    }
+    Serial.println(mqtt_ip);
+
+    mqttClient = new PubSubClient(mqtt_ip, mqtt_port, espClient);
+    // set MQTT server and callback function
+    // mqttClient->setServer(mqtt_ip, mqtt_port);
+    mqttClient->setCallback(callback);
+
+    while (!mqttClient->connected() && connectionTries-- > 0 && mqttBrokerAddress != 0)
     {
         Serial.print("Attempting MQTT connection...");
         // Attempt to connect
-        if (mqttClient.connect("ESP32Client"))
+        if (mqttClient->connect("ESP32Client"))
         {
             Serial.println("connected");
             // Subscribe to the admin topic
-            mqttClient.subscribe("admin");
+            mqttClient->subscribe("admin");
             utils::blinkKeypadLedsBlocking(true);
         }
         else
         {
             Serial.print("failed, rc=");
-            Serial.print(mqttClient.state());
+            Serial.print(mqttClient->state());
             Serial.println(" try again in 5 seconds");
             utils::blinkKeypadLedsBlocking(false);
         }
@@ -146,7 +180,7 @@ void displayRemainingTime()
     if (currentTime - lastTimerPublished > 500) {
         lastTimerPublished = currentTime;
         strTime.insert(2, ":");
-        mqttClient.publish(ESP_TIMER_TOPIC, strTime.c_str());
+        mqttClient->publish(ESP_TIMER_TOPIC, strTime.c_str());
     }
     
     timerDisplay.displayTime(minute, second);
@@ -160,7 +194,7 @@ void displayRemainingTime()
  * If the '*' key is pressed, it starts the countdown timer and sets the current stage to WHEELS.
  * If the '#' key is pressed, it resets the game globally and publishes a reset message to the MQTT client.
  */
-void handleResetStart()
+void handleKeypadInput()
 {
     char keys[] = "123 456 789 *0# N";
     uint8_t index = keypad.getKey();
@@ -176,7 +210,19 @@ void handleResetStart()
 
         if (key == '#') {
             resetGlobal();
-            mqttClient.publish(ESP_TOPIC, GLOBAL_RESET);
+            mqttClient->publish(ESP_TOPIC, GLOBAL_RESET);
+        }
+
+        if (key == '1') {
+            fuel.compartment.open();
+        }
+
+        if (key == '2') {
+            stars.compartment.open();
+        }
+
+        if (key == '3') {
+            wheels.compartment.open();
         }
     }
 }
@@ -206,16 +252,16 @@ void setup()
 
     // connect to wifi
     setup_wifi();
-
-    // set MQTT server and callback function
-    mqttClient.setServer(mqtt_server, mqtt_port);
-    mqttClient.setCallback(callback);
+    
+    if (!MDNS.begin("esp32")) {
+        Serial.println("Cannot start MDNS.");
+    }
 
     // Connect to MQTT broker
     connect_to_mqtt();
 
-    mqttClient.publish(ESP_TOPIC, GLOBAL_RESET);
-    mqttClient.publish(ESP_TIMER_TOPIC, "15:00");
+    mqttClient->publish(ESP_TOPIC, GLOBAL_RESET);
+    mqttClient->publish(ESP_TIMER_TOPIC, "15:00");
 
     // Timer display
     timerDisplay.begin();
@@ -225,10 +271,13 @@ void setup()
 
 void loop()
 {
-    mqttClient.loop();
+    mqttClient->loop();
 
     // display remaining time
     displayRemainingTime();
+
+    // handle compartments
+    handleCompartments();
 
     // Blink stars constantly
     stars.blinkStars();
@@ -237,7 +286,7 @@ void loop()
     {
     case READY:
     {
-        handleResetStart();
+        handleKeypadInput();
         break;
     }
     case WHEELS:
@@ -256,7 +305,7 @@ void loop()
         break;
     }
     case SOLVED:
-        handleResetStart();
+        handleKeypadInput();
         break;
     }
 }

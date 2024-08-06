@@ -2,11 +2,12 @@
 #define WHEELS_H
 
 #include "globals.h"
+#include <Compartment.h>
 
 class Wheels
 {
 public:
-    Wheels() : _solveTime(0), _solved(false), _hintGiven(false) {}
+    Wheels() : _hintGiven(false), compartment(_relayPin) {}
     void setup()
     {
         pinMode(_puzzlePin, INPUT_PULLUP);
@@ -22,14 +23,13 @@ public:
     void reset()
     {
         _hintGiven = false;
-        _solved = false;
         ws2812b.setPixelColor(_hintLedIndex, ws2812b.Color(0, 0, 0));
         ws2812b.show();
     }
 
     void play()
     {
-        if (digitalRead(_puzzlePin) == HIGH || _solved)
+        if (digitalRead(_puzzlePin) == HIGH)
         {
             solve();
         }
@@ -52,29 +52,18 @@ public:
      */
     void solve()
     {
-        unsigned long currentTime = millis();
-        if (!_solved)
-        {
-            _solveTime = millis();
-            _solved = true;
-            digitalWrite(_relayPin, HIGH);
-        }
-        else if (currentTime - _solveTime >= 1000)
-        {
-            _solveTime = currentTime;
-            digitalWrite(_relayPin, LOW);
-            currentStage = FUEL;
-            mqttClient.publish(ESP_TOPIC, WHEELS_SOLVE);
-        }
+        compartment.open();
+        currentStage = FUEL;
+        mqttClient->publish(ESP_TOPIC, WHEELS_SOLVE);
     }
 
 private:
-    unsigned long _solveTime;
-    bool _solved;
     bool _hintGiven;
     const byte _relayPin = 13;
     const byte _puzzlePin = 15;
     const int _hintLedIndex = 20;
+public:
+    Compartment compartment;
 };
 
 #endif /* WHEELS_H */

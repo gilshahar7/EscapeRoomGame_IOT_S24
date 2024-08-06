@@ -3,6 +3,7 @@
 
 #include "globals.h"
 #include "utils.h"
+#include <Compartment.h>
 
 /**
  * @class Stars
@@ -18,16 +19,15 @@
 class Stars
 {
 public:
-    Stars() : _solveTime(0),
-              _solved(false),
-              _hintGiven(false),
+    Stars() : _hintGiven(false),
               _correctPasscode(false),
               _blinkKeypadState(false),
               _starsBlinkInterval(1000),
               _lastBlinkStarsTime(0),
               _blinkStarsledNum(0),
               _blinkStars(false),
-              _blinkPause(0)
+              _blinkPause(0),
+              compartment(_relayPin)
     {
     }
     void setup()
@@ -41,7 +41,6 @@ public:
         _correctPasscode = false;
         _blinkKeypadState = false;
         _hintGiven = false;
-        _solved = false;
     }
 
     void hint()
@@ -58,20 +57,9 @@ public:
      */
     void solve()
     {
-        unsigned long currentTime = millis();
-        if (!_solved)
-        {
-            _solveTime = millis();
-            _solved = true;
-            digitalWrite(_relayPin, HIGH);
-        }
-        else if (currentTime - _solveTime >= 1000)
-        {
-            _solveTime = currentTime;
-            digitalWrite(_relayPin, LOW);
-            currentStage = SOLVED;
-            mqttClient.publish(ESP_TOPIC, STARS_SOLVE);
-        }
+        compartment.open();
+        currentStage = SOLVED;
+        mqttClient->publish(ESP_TOPIC, STARS_SOLVE);
     }
 
     /**
@@ -151,7 +139,7 @@ public:
         uint8_t index = keypad.getKey();
         unsigned long currentTime = millis();
 
-        if (!_blinkKeypadState && !_solved && currentTime - keypadLastDebounceTime > 50)
+        if (!_blinkKeypadState && currentTime - keypadLastDebounceTime > 50)
         {
             if (keys[prevKeyIndex] == 'N' && keys[index] != 'N')
             { // N = Not pressed
@@ -182,15 +170,13 @@ public:
         {
             _blinkKeypadState = utils::blinkKeypadLeds(_correctPasscode);
         }
-        else if (_correctPasscode || _solved)
+        else if (_correctPasscode)
         {
             solve();
         }
     }
 
 private:
-    unsigned long _solveTime;
-    bool _solved;
     bool _hintGiven;
 
     bool _correctPasscode;
@@ -206,6 +192,8 @@ private:
     const String starSolution = "7031";
     const int _blinkingStars[4] = {16, 17, 18, 19};
     const byte _relayPin = 14;
+public:
+    Compartment compartment;
 };
 
 #endif /* STARS_H */

@@ -13,6 +13,15 @@ namespace utils
     int blinkCount = BLINKS;
     bool light = true;
 
+    void setKeyPadLEDColors(int r, int g, int b)
+    {
+        for (int i = 0; i < numKeypadLeds; i++)
+        {
+            ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(r, g, b)); // it only takes effect if pixels.show() is called
+        }
+        ws2812b.show();
+    }
+
     bool blinkKeypadLeds(bool correct)
     {
         unsigned long currentTime = millis();
@@ -21,19 +30,11 @@ namespace utils
             lastBlinkTime = currentTime;
             if (light)
             {
-                for (int i = 0; i < numKeypadLeds; i++)
-                {
-                    ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(correct ? 0 : 25, correct ? 25 : 0, 0)); // it only takes effect if pixels.show() is called
-                }
-                ws2812b.show();
+                setKeyPadLEDColors(correct ? 0 : 25, correct ? 25 : 0, 0);
             }
             else
             {
-                for (int i = 0; i < numKeypadLeds; i++)
-                {
-                    ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0)); // it only takes effect if pixels.show() is called
-                }
-                ws2812b.show();
+                setKeyPadLEDColors(0, 0, 0);
                 blinkCount--;
             }
             light = !light;
@@ -42,11 +43,7 @@ namespace utils
         if (blinkCount <= 0)
         {
             blinkCount = BLINKS;
-            for (int i = 0; i < numKeypadLeds; i++)
-            {
-                ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0)); // it only takes effect if pixels.show() is called
-            }
-            ws2812b.show();
+            setKeyPadLEDColors(0, 0, 0);
             return false;
         }
 
@@ -57,25 +54,13 @@ namespace utils
     {
         for (int j = 0; j < 5; j++)
         {
-            for (int i = 0; i < numKeypadLeds; i++)
-            {
-                ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(correct ? 0 : 25, correct ? 25 : 0, 0)); // it only takes effect if pixels.show() is called
-            }
-            ws2812b.show();
+            setKeyPadLEDColors(correct ? 0 : 25, correct ? 25 : 0, 0);
             delay(100);
 
-            for (int i = 0; i < numKeypadLeds; i++)
-            {
-                ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0)); // it only takes effect if pixels.show() is called
-            }
-            ws2812b.show();
+            setKeyPadLEDColors(0, 0, 0);
             delay(100);
         }
-        for (int i = 0; i < numKeypadLeds; i++)
-        {
-            ws2812b.setPixelColor(keypadLeds[i], ws2812b.Color(0, 0, 0)); // it only takes effect if pixels.show() is called
-        }
-        ws2812b.show();
+        setKeyPadLEDColors(0, 0, 0);
     }
 }
 

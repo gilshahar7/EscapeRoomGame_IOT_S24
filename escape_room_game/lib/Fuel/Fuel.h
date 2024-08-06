@@ -2,6 +2,7 @@
 #define FUEL_H
 
 #include "globals.h"
+#include <Compartment.h>
 
 #define BLINK_COUNT 10
 
@@ -27,9 +28,8 @@ public:
              _light(true),
              _lastConnectTime(0),
              _connectState(false),
-             _solveTime(0),
-             _solved(false),
-             _hintState(OFF)
+             _hintState(OFF),
+             compartment(_relayPin)
     {
     }
 
@@ -48,7 +48,6 @@ public:
     {
         if (global)
             _hintState = OFF;
-        _solved = false;
         _transferState = false;
 
         _currentValues[0] = _hintState == HINT_GIVEN ? 3 : 8;
@@ -87,22 +86,9 @@ public:
      */
     void solve()
     {
-        unsigned long currentTime = millis();
-        if (!_solved)
-        {
-            _solveTime = millis();
-            _solved = true;
-            _blinkState = false;
-            digitalWrite(_relayPin, HIGH);
-        }
-        else if (currentTime - _solveTime >= 1000)
-        {
-            _solveTime = currentTime;
-            _blinkState = true;
-            digitalWrite(_relayPin, LOW);
-            currentStage = STARS;
-            mqttClient.publish(ESP_TOPIC, FUEL_SOLVE);
-        }
+        compartment.open();
+        currentStage = STARS;
+        mqttClient->publish(ESP_TOPIC, FUEL_SOLVE);
     }
 
     /**
@@ -221,7 +207,7 @@ public:
         }
 
         // check if the puzzle is solved and open the door.
-        if ((isTransferSolved() && !_transferState) || _solved)
+        if ((isTransferSolved() && !_transferState))
         {
             if (_blinkState)
             {
@@ -349,8 +335,6 @@ private:
     bool _connectState;
 
     // puzzle state variables
-    unsigned long _solveTime;
-    bool _solved;
     hintState _hintState;
 
     // puzzle variables
@@ -366,6 +350,8 @@ private:
     const byte _resetButtonPin = 34;
     const byte _fillingPins[3] = {25, 26, 27};
     const int _ledMapping[16] = {0, 1, 2, 3, 4, 5, 6, 7, 12, 11, 10, 9, 8, 13, 14, 15};
+public:
+    Compartment compartment;
 };
 
 #endif /* FUEL_H */

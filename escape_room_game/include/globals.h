@@ -3,6 +3,8 @@
 
 #include <Adafruit_NeoPixel.h>
 #include <WiFi.h>
+#include <WiFiManager.h>
+#include <ESPmDNS.h>
 #include <PubSubClient.h>
 #include <I2CKeyPad.h>
 #include <CountDown.h>
@@ -35,18 +37,20 @@ const char *STARS_SOLVE = "star_solved";
 const char *GLOBAL_RESET = "global_reset";
 const char *ADD_MIN = "add_min";
 const char *SUB_MIN = "sub_min";
+const char *COMPARTMENT_OPEN1 = "comp_1_open";
+const char *COMPARTMENT_OPEN2 = "comp_2_open";
+const char *COMPARTMENT_OPEN3 = "comp_3_open";
 
 // Wi-Fi
-const char *ssid = "AndroidAP";
-const char *password = "yuval3101";
 WiFiClient espClient;
 
 // MQTT
 int connectionTries = 3;
 bool connected = false;
-const char *mqtt_server = "192.168.39.237";
+IPAddress mqtt_ip;
+const char *mqtt_hostname = "DESKTOP-E9DDPAE.local";
 const int mqtt_port = 1883;
-PubSubClient mqttClient(mqtt_server, mqtt_port, espClient);
+PubSubClient* mqttClient = nullptr;
 
 // KEYPAD
 const int numKeypadLeds = 4;
