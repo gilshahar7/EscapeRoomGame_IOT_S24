@@ -52,7 +52,6 @@ void callback(char *topic, byte *payload, unsigned int length)
     else if (payloadString.indexOf(STARS_HINT) != -1)
     {
         stars.hint();
-        // TODO: Think about possible hint
     }
     else if (payloadString.indexOf(STARS_SOLVE) != -1)
     {

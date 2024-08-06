@@ -23,6 +23,7 @@ public:
               _hintGiven(false),
               _correctPasscode(false),
               _blinkKeypadState(false),
+              _starsBlinkInterval(1000),
               _lastBlinkStarsTime(0),
               _blinkStarsledNum(0),
               _blinkStars(false),
@@ -46,6 +47,7 @@ public:
     void hint()
     {
         _hintGiven = true;
+        _starsBlinkInterval = 250;
     }
 
     /**
@@ -194,7 +196,7 @@ private:
     bool _correctPasscode;
     bool _blinkKeypadState;
 
-    const unsigned long _starsBlinkInterval = 1000;
+    unsigned long _starsBlinkInterval;
     unsigned long _lastBlinkStarsTime;
     int _blinkStarsledNum;
     bool _blinkStars;
