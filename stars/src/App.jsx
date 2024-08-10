@@ -1,8 +1,24 @@
-import React, { useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
+import { initializeApp } from 'firebase/app';
+import { getDatabase, ref, onValue } from 'firebase/database';
 import OrientationNotification from './OrientationNotification';
+
+const firebaseConfig = {
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
+};
+
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
 
 const SCALE_FACTOR = 2; // Adjust this factor to control the spread
 const X_STRETCH_FACTOR = 2; // Factor to stretch x-coordinates
@@ -56,10 +72,12 @@ function ConnectingLine({ start, end }) {
   );
 }
 
-function Dots() {
-  const groupRef = useRef();
+function Dots({
+  hintGiven,
+}) {
   const [showLabels, setShowLabels] = useState(false);
   const [initialAngleSet, setInitialAngleSet] = useState(false);
+  const groupRef = useRef();
 
   // Define white star names
   const whiteStarNames = ["Toonyne", "Kpyr", "NT-9", "Nyne", "Xiero", "Betelgeuse", "Phorr"];
@@ -113,11 +131,12 @@ function Dots() {
       const polarTolerance = 25; // degrees
 
       // Condition to toggle labels
-      if (
-        azimuthalAngle > targetAzimuthal - azimuthalTolerance &&
+      if ( 
+        hintGiven ||
+        (azimuthalAngle > targetAzimuthal - azimuthalTolerance &&
         azimuthalAngle < targetAzimuthal + azimuthalTolerance &&
         polarAngle > targetPolar - polarTolerance &&
-        polarAngle < targetPolar + polarTolerance
+        polarAngle < targetPolar + polarTolerance)
       ) {
         setShowLabels(true);
 
@@ -166,14 +185,29 @@ function Dots() {
   );
 }
 
-
 function App() {
+  const [hintGiven, setHintGiven] = useState(false);
+
+  useEffect(() => {
+    const hintRef = ref(database, 'admin'); // Path to your data in Firebase
+    onValue(hintRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setHintGiven(true);
+      } else {
+        setHintGiven(false);
+      }
+    });
+  }, []);
+
   return (
     <div style={{ width: '100vw', height: '100vh', backgroundColor: '#000' }}>
       <OrientationNotification />
       <Canvas camera={{ position: [0, 0, 5] }}>
         <OrbitControls />
-        <Dots />
+        <Dots
+          hintGiven={hintGiven}
+        />
       </Canvas>
     </div>
   );
