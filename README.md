@@ -63,7 +63,7 @@ To access the Node-RED dashboard:
 2. Open a web browser and navigate to the Node-RED dashboard URL (e.g., `http://localhost:1880/ui`).
 
 ## "Star Chase" Map
-<img src="https://private-user-images.githubusercontent.com/63421791/354656345-98fc8be6-abc5-46ab-aaf4-b28feed4c9fe.png?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3MjI2MTUxNjYsIm5iZiI6MTcyMjYxNDg2NiwicGF0aCI6Ii82MzQyMTc5MS8zNTQ2NTYzNDUtOThmYzhiZTYtYWJjNS00NmFiLWFhZjQtYjI4ZmVlZDRjOWZlLnBuZz9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNDA4MDIlMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjQwODAyVDE2MDc0NlomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPWZjNWU0ZjVhOGUzM2YyYjgwMGQxN2FkYzY2M2FhMTBiMWZlNGE3N2YwNzAyY2FjMDNmZmQ0NDhiNzMwZGMxOTUmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0JmFjdG9yX2lkPTAma2V5X2lkPTAmcmVwb19pZD0wIn0.ZYkmni9QzcPg5R5fvofZCpZ2dGgq_avxwUD-SKbRfxc" width="500" height="300" />
+<img src="https://github.com/user-attachments/assets/98fc8be6-abc5-46ab-aaf4-b28feed4c9fe" width="500" height="300"/>
 
 A webpage that features 3D model of the LEDs in the "Star Chaser" puzzle.\
 The map is implemented using [React](https://react.dev/) and hosted using github pages at [https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/](https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/)
