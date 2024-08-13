@@ -63,7 +63,7 @@ void callback(char *topic, byte *payload, unsigned int length)
     else if (payloadString.indexOf(STARS_SOLVE) != -1)
     {
         stars.solve();
-        auto [minute, second] = calcRemainingTime();
+        auto [minute, second] = calcTimePassed();
         mqttClient->publish(ESP_COMPLETION_TOPIC, formatTime(minute, second).c_str());   
     }
     else if (payloadString.indexOf(GLOBAL_RESET) != -1)
@@ -145,6 +145,17 @@ void connect_to_mqtt()
             utils::blinkKeypadLedsBlocking(false);
         }
     }
+}
+
+static std::pair<uint32_t, uint32_t> calcTimePassed()
+{
+    const int MINUTE = 60;
+    uint32_t passedSeconds = gameDuration - timerCountDown.remaining();
+
+    uint32_t second = passedSeconds % MINUTE;
+    uint32_t minute = passedSeconds / MINUTE;
+
+    return std::make_pair(minute, second);
 }
 
 static std::pair<uint32_t, uint32_t> calcRemainingTime()
@@ -316,7 +327,7 @@ void loop()
     {
         stars.play();
         if (currentStage == SOLVED) {
-            auto [minute, second] = calcRemainingTime();
+            auto [minute, second] = calcTimePassed();
             mqttClient->publish(ESP_COMPLETION_TOPIC, formatTime(minute, second).c_str());   
         }
         break;

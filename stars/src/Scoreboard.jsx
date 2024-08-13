@@ -23,7 +23,7 @@ const Scoreboard = () => {
           const [bMinutes, bSeconds] = b.score.split(':').map(Number);
           const aTotalSeconds = aMinutes * 60 + aSeconds;
           const bTotalSeconds = bMinutes * 60 + bSeconds;
-          return bTotalSeconds - aTotalSeconds; // Sort in descending order
+          return aTotalSeconds - bTotalSeconds; // Sort in descending order
         });
 
         setScores(scoresArray);
@@ -37,16 +37,18 @@ const Scoreboard = () => {
       <table>
         <thead>
           <tr>
+            <th>Rank</th>
             <th>Name</th>
-            <th>Remaining Time</th>
+            <th>Time</th>
           </tr>
         </thead>
         <tbody>
           {scores.map((score, index) => (
-            <tr key={index}>
-              <td className="scoreboard-name">{score.name}</td>
-              <td className="scoreboard-score">{score.score}</td>
-            </tr>
+            <tr key={index} className={`rank-${index + 1}`}>
+            <td className="scoreboard-rank">{index + 1}</td>
+            <td className="scoreboard-name">{score.name}</td>
+            <td className="scoreboard-score">{score.score}</td>
+          </tr>
           ))}
         </tbody>
       </table>
