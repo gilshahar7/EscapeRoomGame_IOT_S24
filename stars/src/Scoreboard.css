@@ -3,6 +3,8 @@ body {
   background-image: url('/scores_bg.png'); /* Path to your space-themed background image */
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat; /* Prevents the image from repeating */
+  background-attachment: fixed; /* Keeps the background fixed in place during scrolling */
   margin: 0;
   padding: 0;
   font-family: Arial, sans-serif;
