@@ -63,6 +63,8 @@ void callback(char *topic, byte *payload, unsigned int length)
     else if (payloadString.indexOf(STARS_SOLVE) != -1)
     {
         stars.solve();
+        auto [minute, second] = calcRemainingTime();
+        mqttClient->publish(ESP_COMPLETION_TOPIC, formatTime(minute, second).c_str());   
     }
     else if (payloadString.indexOf(GLOBAL_RESET) != -1)
     {
@@ -145,6 +147,27 @@ void connect_to_mqtt()
     }
 }
 
+static std::pair<uint32_t, uint32_t> calcRemainingTime()
+{
+    const int MINUTE = 60;
+    uint32_t remainingSeconds;
+
+    if (currentStage == READY)
+        remainingSeconds = gameDuration;
+    else
+        remainingSeconds = timerCountDown.remaining();
+
+    uint32_t second = remainingSeconds % MINUTE;
+    uint32_t minute = remainingSeconds / MINUTE;
+
+    return std::make_pair(minute, second);
+}
+
+inline static std::string formatTime(uint32_t minute, uint32_t second)
+{
+    return std::to_string(minute / 10) + std::to_string(minute % 10) + ":" + std::to_string(second / 10) + std::to_string(second % 10);
+}
+
 /**
  * @brief Displays the remaining time of the game.
  * 
@@ -164,22 +187,12 @@ void displayRemainingTime()
     const unsigned long currentTime = millis();
 
     // Display remaining time
-    const int MINUTE = 60;
-    uint32_t remainingSeconds;
+    auto [minute, second] = calcRemainingTime();
 
-    if (currentStage == READY)
-        remainingSeconds = gameDuration;
-    else
-        remainingSeconds = timerCountDown.remaining();
-
-    uint32_t second = remainingSeconds % MINUTE;
-    uint32_t minute = remainingSeconds / MINUTE;
-
-    std::string strTime = std::to_string(minute / 10) + std::to_string(minute % 10) + std::to_string(second / 10) + std::to_string(second % 10);
+    std::string strTime = formatTime(minute, second);
 
     if (currentTime - lastTimerPublished > 500) {
         lastTimerPublished = currentTime;
-        strTime.insert(2, ":");
         mqttClient->publish(ESP_TIMER_TOPIC, strTime.c_str());
     }
     
@@ -302,6 +315,10 @@ void loop()
     case STARS:
     {
         stars.play();
+        if (currentStage == SOLVED) {
+            auto [minute, second] = calcRemainingTime();
+            mqttClient->publish(ESP_COMPLETION_TOPIC, formatTime(minute, second).c_str());   
+        }
         break;
     }
     case SOLVED:
