@@ -23,7 +23,8 @@ stage currentStage;
 /* CONSTANTS */
 // ESP MQTT TOPIC
 const char *ESP_TOPIC = "esp";
-const char* ESP_TIMER_TOPIC = "esp_timer";
+const char *ESP_TIMER_TOPIC = "esp_timer";
+const char *ESP_COMPLETION_TOPIC = "esp_completion";
 
 // MQTT MESSAGES
 const char *START_GAME = "start_game";

@@ -3,8 +3,10 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { OrbitControls, Text, Line } from '@react-three/drei';
 import * as THREE from 'three';
 import { initializeApp } from 'firebase/app';
-import { getDatabase, ref, onValue } from 'firebase/database';
+import { getDatabase, ref, onValue, set } from 'firebase/database';
 import OrientationNotification from './OrientationNotification';
+import { HashRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
+import Scoreboard from './Scoreboard';
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -187,30 +189,72 @@ function Dots({
 
 function App() {
   const [hintGiven, setHintGiven] = useState(false);
+  const [gameCompleted, setGameCompleted] = useState(false);
+  const [score, setScore] = useState(null);
+  const history = useNavigate();
 
   useEffect(() => {
     const hintRef = ref(database, 'admin'); // Path to your data in Firebase
     onValue(hintRef, (snapshot) => {
       const data = snapshot.val();
-      if (data) {
-        setHintGiven(true);
-      } else {
-        setHintGiven(false);
+      setHintGiven(!!data);
+    });
+
+    const gameCompletionRef = ref(database, 'gameCompletion'); // Path to game completion status in Firebase
+    onValue(gameCompletionRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data && data.completed) {
+        setGameCompleted(true);
       }
     });
   }, []);
+
+  useEffect(() => {
+    if (gameCompleted) {
+      const timeFinishedRef = ref(database, 'TimeFinished'); // Path to the score in Firebase
+      onValue(timeFinishedRef, (snapshot) => {
+        const data = snapshot.val();
+        setScore(data);
+      });
+    }
+  }, [gameCompleted]);
+
+  useEffect(() => {
+    if (gameCompleted && score !== null) {
+      const userName = prompt("Congratulations! Please enter your name:");
+      if (userName) {
+        set(ref(database, `scores/${userName}`), score)
+          .then(() => {
+            // Redirect to scoreboard
+            history('/scoreboard');
+          })
+          .finally(() => {
+            // Set gameCompleted to false after writing to the database
+            set(ref(database, 'gameCompletion/completed'), false);
+            setGameCompleted(false);
+          });
+      }
+    }
+  }, [gameCompleted, score, history]);
 
   return (
     <div style={{ width: '100vw', height: '100vh', backgroundColor: '#000' }}>
       <OrientationNotification />
       <Canvas camera={{ position: [0, 0, 5] }}>
         <OrbitControls />
-        <Dots
-          hintGiven={hintGiven}
-        />
+        <Dots hintGiven={hintGiven} />
       </Canvas>
     </div>
   );
 }
 
-export default App;
+const AppWrapper = () => (
+  <Router>
+    <Routes>
+      <Route path="/" element={<App />} />
+      <Route path="/scoreboard" element={<Scoreboard />} />
+    </Routes>
+  </Router>
+);
+
+export default AppWrapper;
