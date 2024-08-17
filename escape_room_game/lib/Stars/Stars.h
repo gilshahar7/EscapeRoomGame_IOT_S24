@@ -41,6 +41,7 @@ public:
         _correctPasscode = false;
         _blinkKeypadState = false;
         _hintGiven = false;
+        _starsBlinkInterval = 1000;
     }
 
     void hint()

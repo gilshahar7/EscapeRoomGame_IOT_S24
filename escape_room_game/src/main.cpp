@@ -26,6 +26,38 @@ void handleCompartments()
     stars.compartment.handle();
 }
 
+static std::pair<uint32_t, uint32_t> calcTimePassed()
+{
+    const int MINUTE = 60;
+    uint32_t passedSeconds = gameDuration - timerCountDown.remaining();
+
+    uint32_t second = passedSeconds % MINUTE;
+    uint32_t minute = passedSeconds / MINUTE;
+
+    return std::make_pair(minute, second);
+}
+
+static std::pair<uint32_t, uint32_t> calcRemainingTime()
+{
+    const int MINUTE = 60;
+    uint32_t remainingSeconds;
+
+    if (currentStage == READY)
+        remainingSeconds = gameDuration;
+    else
+        remainingSeconds = timerCountDown.remaining();
+
+    uint32_t second = remainingSeconds % MINUTE;
+    uint32_t minute = remainingSeconds / MINUTE;
+
+    return std::make_pair(minute, second);
+}
+
+inline static std::string formatTime(uint32_t minute, uint32_t second)
+{
+    return std::to_string(minute / 10) + std::to_string(minute % 10) + ":" + std::to_string(second / 10) + std::to_string(second % 10);
+}
+
 // Wifi and MQTT functions
 void callback(char *topic, byte *payload, unsigned int length)
 {
@@ -145,38 +177,6 @@ void connect_to_mqtt()
             utils::blinkKeypadLedsBlocking(false);
         }
     }
-}
-
-static std::pair<uint32_t, uint32_t> calcTimePassed()
-{
-    const int MINUTE = 60;
-    uint32_t passedSeconds = gameDuration - timerCountDown.remaining();
-
-    uint32_t second = passedSeconds % MINUTE;
-    uint32_t minute = passedSeconds / MINUTE;
-
-    return std::make_pair(minute, second);
-}
-
-static std::pair<uint32_t, uint32_t> calcRemainingTime()
-{
-    const int MINUTE = 60;
-    uint32_t remainingSeconds;
-
-    if (currentStage == READY)
-        remainingSeconds = gameDuration;
-    else
-        remainingSeconds = timerCountDown.remaining();
-
-    uint32_t second = remainingSeconds % MINUTE;
-    uint32_t minute = remainingSeconds / MINUTE;
-
-    return std::make_pair(minute, second);
-}
-
-inline static std::string formatTime(uint32_t minute, uint32_t second)
-{
-    return std::to_string(minute / 10) + std::to_string(minute % 10) + ":" + std::to_string(second / 10) + std::to_string(second % 10);
 }
 
 /**

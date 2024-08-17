@@ -221,7 +221,7 @@ function App() {
 
   useEffect(() => {
     if (gameCompleted && score !== null) {
-      const userName = prompt("Congratulations! Please enter your name:");
+      const userName = prompt("Congratulations! Your time is: ${score}. Please enter your name:");
       if (userName) {
         set(ref(database, `scores/${userName}`), score)
           .then(() => {
