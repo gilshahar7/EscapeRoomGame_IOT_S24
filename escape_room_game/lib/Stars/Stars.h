@@ -58,6 +58,8 @@ public:
      */
     void solve()
     {
+        if (currentStage != STARS)
+            return;
         compartment.open();
         currentStage = SOLVED;
         mqttClient->publish(ESP_TOPIC, STARS_SOLVE);

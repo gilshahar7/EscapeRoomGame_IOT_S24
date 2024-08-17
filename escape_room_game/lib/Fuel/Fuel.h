@@ -86,6 +86,8 @@ public:
      */
     void solve()
     {
+        if (currentStage != FUEL)
+            return;
         compartment.open();
         currentStage = STARS;
         mqttClient->publish(ESP_TOPIC, FUEL_SOLVE);

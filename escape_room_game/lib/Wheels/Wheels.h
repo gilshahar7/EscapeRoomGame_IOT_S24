@@ -52,6 +52,8 @@ public:
      */
     void solve()
     {
+        if (currentStage != WHEELS)
+            return;
         compartment.open();
         currentStage = FUEL;
         mqttClient->publish(ESP_TOPIC, WHEELS_SOLVE);

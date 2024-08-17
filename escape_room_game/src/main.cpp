@@ -16,6 +16,8 @@ void resetGlobal()
     fuel.reset(true /*global*/);
     stars.reset();
 
+    mqttClient->publish(ESP_TOPIC, GLOBAL_RESET);
+
     currentStage = READY;
 }
 
@@ -228,13 +230,13 @@ void handleKeypadInput()
         char key = keys[index];
         if (key == '*')
         {
+            resetGlobal();
             timerCountDown.start(gameDuration);
             currentStage = WHEELS;
         }
 
         if (key == '#') {
             resetGlobal();
-            mqttClient->publish(ESP_TOPIC, GLOBAL_RESET);
         }
 
         if (key == '1') {

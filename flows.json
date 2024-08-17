@@ -253,12 +253,14 @@
             "8bf496230d5d3fae",
             "77349913427e633f",
             "cb389888823c8ead",
-            "d6cf8581afe7b9d0"
+            "d6cf8581afe7b9d0",
+            "d94340d9425e2c9d",
+            "c4890880d838dc0d"
         ],
         "x": 904,
         "y": 1099,
-        "w": 522,
-        "h": 362
+        "w": 542,
+        "h": 442
     },
     {
         "id": "dde4727e2c141e42",
@@ -2081,10 +2083,11 @@
             "dc412d1d0e2feee7"
         ],
         "x": 945,
-        "y": 1200,
+        "y": 1220,
         "wires": [
             [
-                "45be5b8d54ccd833"
+                "45be5b8d54ccd833",
+                "c4890880d838dc0d"
             ]
         ]
     },
@@ -2135,8 +2138,8 @@
         "pathType": "str",
         "priority": "1",
         "queryType": "set",
-        "x": 1300,
-        "y": 1260,
+        "x": 1320,
+        "y": 1320,
         "wires": []
     },
     {
@@ -2148,8 +2151,8 @@
         "links": [
             "131d5c3aff61cb7b"
         ],
-        "x": 945,
-        "y": 1300,
+        "x": 955,
+        "y": 1360,
         "wires": [
             [
                 "8bf496230d5d3fae",
@@ -2169,7 +2172,7 @@
         "priority": "1",
         "queryType": "set",
         "x": 1110,
-        "y": 1340,
+        "y": 1400,
         "wires": []
     },
     {
@@ -2186,7 +2189,7 @@
         "finalize": "",
         "libs": [],
         "x": 1100,
-        "y": 1260,
+        "y": 1320,
         "wires": [
             [
                 "c991b068655683f2"
@@ -2215,7 +2218,7 @@
         "topic": "scores",
         "topicType": "str",
         "x": 1010,
-        "y": 1420,
+        "y": 1500,
         "wires": [
             [
                 "d6cf8581afe7b9d0"
@@ -2233,9 +2236,45 @@
         "pathType": "msg",
         "priority": "1",
         "queryType": "remove",
-        "x": 1180,
-        "y": 1420,
+        "x": 1200,
+        "y": 1500,
         "wires": []
+    },
+    {
+        "id": "d94340d9425e2c9d",
+        "type": "firebase-out",
+        "z": "0979b50bccfb395b",
+        "g": "2d1bbb4f03e67098",
+        "name": "",
+        "database": "fe788a51d2c2f578",
+        "path": "topic",
+        "pathType": "msg",
+        "priority": "1",
+        "queryType": "remove",
+        "x": 1320,
+        "y": 1260,
+        "wires": []
+    },
+    {
+        "id": "c4890880d838dc0d",
+        "type": "function",
+        "z": "0979b50bccfb395b",
+        "g": "2d1bbb4f03e67098",
+        "name": "game completion topic",
+        "func": "msg.topic = \"gameCompletion\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1120,
+        "y": 1260,
+        "wires": [
+            [
+                "d94340d9425e2c9d"
+            ]
+        ]
     },
     {
         "id": "8051520c4a6761a4",
