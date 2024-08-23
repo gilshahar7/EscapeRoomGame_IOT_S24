@@ -7,9 +7,6 @@ Wheels wheels;
 Fuel fuel;
 Stars stars;
 
-/* CODE */
-// STARRY NIGHT
-// Blink the four star leds. Total time: 8 seconds.
 void resetGlobal()
 {
     wheels.reset();
@@ -130,6 +127,7 @@ void callback(char *topic, byte *payload, unsigned int length)
 void setup_wifi()
 {
     WiFiManager wifiManager;
+    wifiManager.setConfigPortalTimeout(60); // timeout connection to AP after 60 seconds
     if (!wifiManager.autoConnect("escape_room_game_AP")) {
         Serial.println("Failed to connect and hit timeout");
     }
