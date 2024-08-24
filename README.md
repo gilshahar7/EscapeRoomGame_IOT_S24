@@ -68,6 +68,12 @@ To access the Node-RED dashboard:
 A webpage that features 3D model of the LEDs in the "Star Chaser" puzzle.\
 The map is implemented using [React](https://react.dev/) and hosted using github pages at [https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/](https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/)
 
+## Scoreboard
+<img src="https://github.com/user-attachments/assets/f115bb78-d747-429d-af7d-4774a9a9af24" width="500" height="300"/>
+
+A webpage featuring the players' scores.
+Implemented using [React](https://react.dev/) and hosted using github pages at [https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/#/scoreboard](https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/#/scoreboard)
+
 # Repository Layout
 * .github: Info related to hosting the stars map.
 * escape_room_game: All the code related to the ESP side of the project, and configurations related to using PlatformIO.
