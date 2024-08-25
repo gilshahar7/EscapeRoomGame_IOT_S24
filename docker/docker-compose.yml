@@ -1,0 +1,40 @@
+services:
+  mosquitto:
+    image: eclipse-mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config/mosquitto.conf
+    networks:
+      - mqtt-network
+    healthcheck:
+      test: ["CMD", "mosquitto_pub", "-h", "localhost", "-t", "healthcheck", "-m", "test"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  avahi:
+    image: custom-avahi
+    ports:
+      - "31416:5353/udp"
+    networks:
+      - mqtt-network
+    depends_on:
+      - mosquitto
+
+  node-red:
+    image: custom-node-red
+    ports:
+      - "1880:1880"
+    networks:
+      - mqtt-network
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+
+networks:
+  mqtt-network:
+    driver: bridge
+
+volumes:
+  mosquitto-config:
