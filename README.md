@@ -47,7 +47,7 @@ In this puzzle, you will be presented with a 3D map of stars, accompanied by bli
 
 ## Node-RED Dashboard
 
-The Node-RED dashboard is used to monitor and control various aspects of the escape room game. It provides a user-friendly interface for administrators to manage the game state, monitor puzzle progress, and control game settings.
+The [Node-RED](https://nodered.org/) dashboard is used to monitor and control various aspects of the escape room game. It provides a user-friendly interface for administrators to manage the game state, monitor puzzle progress, and control game settings.
 The dashbaord is using MQTT to exchange game state information with the ESP32.
 
 ### Features
@@ -72,10 +72,10 @@ The map is implemented using [React](https://react.dev/) and hosted using github
 <img src="https://github.com/user-attachments/assets/f115bb78-d747-429d-af7d-4774a9a9af24" width="500" height="300"/>
 
 A webpage featuring the players' scores.
-Implemented using [React](https://react.dev/) and hosted using github pages at [https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/#/scoreboard](https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/#/scoreboard)
+Implemented using [React](https://react.dev/), with a [Firebase](https://firebase.google.com/) real-time database as backend and hosted using github pages at [https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/#/scoreboard](https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/#/scoreboard)
 
 # Repository Layout
 * .github: Info related to hosting the stars map.
 * escape_room_game: All the code related to the ESP side of the project, and configurations related to using PlatformIO.
-* stars: The "Star Chase" map sub-project using [React](https://react.dev/) and [Vite](https://vitejs.dev/).
+* stars: The "Star Chase" map and scoreboard sub-project using [React](https://react.dev/) and [Vite](https://vitejs.dev/).
 * flows.json: Holds the Node-RED admin panel components.
