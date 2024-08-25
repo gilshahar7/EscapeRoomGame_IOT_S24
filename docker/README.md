@@ -14,4 +14,6 @@ docker pull yubki/eclipse-mosquitto
 ```
 docker-compose up -d
 ```
-4. Everything should be up and running!
+4. Make sure your node-red mqtt config tries to connect to mosquito:1883 instead of localhost:1883.
+5. Create a Firebase configuration node using your database URL and API key.
+6. Everything should be up and running!
