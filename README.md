@@ -76,6 +76,7 @@ Implemented using [React](https://react.dev/), with a [Firebase](https://firebas
 
 # Repository Layout
 * .github: Info related to hosting the stars map.
+* docker: Instructions to run the admin panel using docker from any machine.
 * escape_room_game: All the code related to the ESP side of the project, and configurations related to using PlatformIO.
 * stars: The "Star Chase" map and scoreboard sub-project using [React](https://react.dev/) and [Vite](https://vitejs.dev/).
 * flows.json: Holds the Node-RED admin panel components.
