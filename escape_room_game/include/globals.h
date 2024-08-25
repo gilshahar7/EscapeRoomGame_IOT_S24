@@ -49,7 +49,6 @@ WiFiClient espClient;
 int connectionTries = 3;
 bool connected = false;
 IPAddress mqtt_ip;
-const char *mqtt_hostname = "DESKTOP-E9DDPAE.local";
 const int mqtt_port = 1883;
 PubSubClient* mqttClient = nullptr;
 
