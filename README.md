@@ -91,7 +91,7 @@ docker-compose up -d
 
 # Repository Layout
 * .github: Info related to hosting the stars map.
-* docker: Instructions to run the admin panel using docker from any machine.
+* docker: Configurations needed to run docker.
 * escape_room_game: All the code related to the ESP side of the project, and configurations related to using PlatformIO.
 * stars: The "Star Chase" map and scoreboard sub-project using [React](https://react.dev/) and [Vite](https://vitejs.dev/).
 * flows.json: Holds the Node-RED admin panel components.
