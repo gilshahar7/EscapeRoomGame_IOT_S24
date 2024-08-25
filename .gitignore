@@ -1,1 +1,6 @@
 .vscode
+
+# docker images
+docker/avahi
+docker/mosquitto
+docker/node-red
