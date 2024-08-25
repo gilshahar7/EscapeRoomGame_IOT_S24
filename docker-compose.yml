@@ -4,7 +4,7 @@ services:
     ports:
       - "1883:1883"
     volumes:
-      - ./mosquitto/config:/mosquitto/config/mosquitto.conf
+      - ./docker/mosquitto/config:/mosquitto/config/mosquitto.conf
     networks:
       - mqtt-network
     healthcheck:
