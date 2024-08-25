@@ -17,15 +17,3 @@ docker-compose up -d
 4. Make sure your node-red mqtt config tries to connect to mosquito:1883 instead of localhost:1883.
 5. Create a Firebase configuration node using your database URL and API key.
 6. Everything should be up and running!
-
-### Troubleshooting ###
-
-If pulling the images didn't work, you can build them from source:
-1. In docker/avahi, run:
-```
-docker build -t <avahi_image_name> .
-```
-2. In docker/node-red, run:
-```
-docker build -t <node-red_image_name> .
-```

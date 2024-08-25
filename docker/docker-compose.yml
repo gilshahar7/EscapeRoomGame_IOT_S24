@@ -14,7 +14,7 @@ services:
       retries: 3
 
   avahi:
-    image: custom-avahi
+    image: yubki/custom-avahi:latest
     ports:
       - "31416:5353/udp"
     networks:
@@ -23,7 +23,7 @@ services:
       - mosquitto
 
   node-red:
-    image: custom-node-red
+    image: yubki/custom-node-red:latest
     ports:
       - "1880:1880"
     networks:
