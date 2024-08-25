@@ -74,6 +74,21 @@ The map is implemented using [React](https://react.dev/) and hosted using github
 A webpage featuring the players' scores.
 Implemented using [React](https://react.dev/), with a [Firebase](https://firebase.google.com/) real-time database as backend and hosted using github pages at [https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/#/scoreboard](https://gilshahar7.github.io/EscapeRoomGame_IOT_S24/#/scoreboard)
 
+# Running the Admin Panel Using Docker #
+
+To run the admin from any machine, you can use Docker.\
+This will take care of installations of node-red and the MQTT broker:
+
+1. Install [Docker](https://docs.docker.com/engine/install/)
+2. In this directory, run:
+```
+docker-compose up -d
+```
+3. import `flows.json` to a node-red flow.
+4. Make sure your node-red mqtt config tries to connect to mosquito:1883 instead of localhost:1883.
+5. Create a Firebase configuration node using your database URL and API key.
+6. Everything should be up and running!
+
 # Repository Layout
 * .github: Info related to hosting the stars map.
 * docker: Instructions to run the admin panel using docker from any machine.
