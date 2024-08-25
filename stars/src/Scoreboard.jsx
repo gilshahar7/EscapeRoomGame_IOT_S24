@@ -45,9 +45,9 @@ const Scoreboard = () => {
         <tbody>
           {scores.map((score, index) => (
             <tr key={index} className={`rank-${index + 1}`}>
-            <td className="scoreboard-rank">{index + 1}</td>
-            <td className="scoreboard-name">{score.name}</td>
-            <td className="scoreboard-score">{score.score}</td>
+            <td className="scoreboard-rank"><strong>{index + 1}</strong></td>
+            <td className="scoreboard-name"><strong>{score.name}</strong></td>
+            <td className="scoreboard-score"><strong>{score.score}</strong></td>
           </tr>
           ))}
         </tbody>
