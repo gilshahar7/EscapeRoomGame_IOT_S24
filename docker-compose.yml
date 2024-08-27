@@ -20,7 +20,8 @@ services:
     networks:
       - mqtt-network
     depends_on:
-      - mosquitto
+      mosquitto:
+        condition: service_healthy
 
   node-red:
     image: yubki/custom-node-red:latest
