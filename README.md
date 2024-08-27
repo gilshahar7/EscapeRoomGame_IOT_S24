@@ -24,7 +24,15 @@ In this puzzle, you will be presented with a 3D map of stars, accompanied by bli
 
 # In Depth Details
 
+| ![](https://github.com/user-attachments/assets/9692b377-5a2c-48cf-a5b7-16084ce07753) |
+|:--:|
+| *Process Diagram* |
+
 ## Hardware
+
+| ![](https://github.com/user-attachments/assets/bd9223fe-9a57-44c8-a769-a706a846f317) |
+|:--:|
+| *Wiring Diagram* |
 
 | Component | Purpose | Description
 | --- | --- | --- |
@@ -79,3 +87,7 @@ Implemented using [React](https://react.dev/), with a [Firebase](https://firebas
 * escape_room_game: All the code related to the ESP side of the project, and configurations related to using PlatformIO.
 * stars: The "Star Chase" map and scoreboard sub-project using [React](https://react.dev/) and [Vite](https://vitejs.dev/).
 * flows.json: Holds the Node-RED admin panel components.
+
+# Poster
+
+![](https://github.com/user-attachments/assets/b0a6da19-2f55-4af5-b8c3-0366948c10d6)
