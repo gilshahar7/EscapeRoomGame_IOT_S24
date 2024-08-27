@@ -65,10 +65,30 @@ The dashbaord is using MQTT to exchange game state information with the ESP32.
 
 ### Accessing the Dashboard
 
-To access the Node-RED dashboard:
+#### Admin Panel Software Requirements
+* nodejs
+* node-red
+* [Eclipse Mosquito](https://mosquitto.org/) mqtt broker
+* [Bonjour](https://developer.apple.com/bonjour/)
+* A Firebase realtime database and an API key.
+
+##### To access the Node-RED dashboard:
 
 1. Ensure that Node-RED is running on your server.
 2. Open a web browser and navigate to the Node-RED dashboard URL (e.g., `http://localhost:1880/ui`).
+3. Import `flows.json`.
+4. Change the Firebase configuration node to include your API key and database URL. 
+
+##### Mosquitto setup:
+
+Make sure the configuration file includes the following:
+```
+allow_anonymous true
+listener 1883 0.0.0.0
+```
+To run mosquitto:
+1. run powershell as admin.
+2. run `.\setup.bat`.
 
 ## "Star Chase" Map
 <img src="https://github.com/user-attachments/assets/98fc8be6-abc5-46ab-aaf4-b28feed4c9fe" width="500" height="300"/>
